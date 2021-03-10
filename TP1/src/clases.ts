@@ -10,10 +10,10 @@ class Sistema {
     constructor() {
         
     }
-    agregarUsuarios(usuario:Usuario) {
+    agregarUsuario(usuario:Usuario) {
         this.usuarios.push(usuario);
     }
-    agregarTitulos(titulo:Titulo) {
+    agregarTitulo(titulo:Titulo) {
         this.titulos.push(titulo);
     }
 }
@@ -37,49 +37,71 @@ abstract class Titulo {
     private titulo:string
     private regiones:Array<Region>
     constructor(titulo:string) {
-        this.titulo=titulo
+        this.titulo=titulo;
     }
     estaEnlaLista(region:Region):boolean {
         this.regiones.forEach((item)=>{
-            if(region==item) return true
+            if(region==item) return true;
         })
-        return false
+        return false;
     }
-    getTitulo(){
-        return this.titulo
+    getTitulo():string{
+        return this.titulo;
     }
-    setTitulo(titulo:string){
-        this.titulo=titulo
+    setTitulo(titulo:string):void{
+        this.titulo=titulo;
     }
-    agregarRegion(region:Region){
+    agregarRegion(region:Region):void{
 
         if(!this.estaEnlaLista(region)){
-            this.regiones.push(region)
+            this.regiones.push(region);
         }
     }
-    quitarRegion(region:Region){
+    quitarRegion(region:Region):void{
 
         if(this.estaEnlaLista(region)){
             const nuevasRegiones:Array<Region>=this.regiones.filter(item =>{
-                if(item!=region) return item 
+                if(item!=region) return item;
             })
         }
     }
-    disponible(region:Region){
-        return this.estaEnlaLista(region)
+    disponible(region:Region):boolean{
+        return this.estaEnlaLista(region);
     }
 }
 
-class Pelicula {
-    constructor(parameters) {
-        
+class Pelicula extends Titulo{
+    private contenido:Contenido
+    constructor(titulo:string) {
+        super(titulo);
     }
+    getContenido():Contenido{
+        return this.contenido;
+    }
+    setContenido(contenido:Contenido):void{
+        this.contenido=contenido;
+    }
+
 }
 
-class Serie {
-    constructor(parameters) {
-        
+class Serie extends Titulo{
+    private capitulos:Array<Contenido>
+    constructor(titulo:string) {
+        super(titulo);
     }
+    agregarCapitulo(capitulo:Contenido):void{
+        this.capitulos.push(capitulo);
+    }
+    obtenerCapitulo(capitulo:number):Contenido{
+        return this.capitulos[capitulo];
+    }
+    cantidadDeCapitulos():number{
+        return this.capitulos.length;
+    }
+    primerCapitulo():Contenido{
+        return this.capitulos[0]
+    }
+
 }
 
 class Usuario {
