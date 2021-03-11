@@ -10,11 +10,24 @@ class Sistema {
     constructor() {
         
     }
-    agregarUsuario(usuario:Usuario) {
+    agregarUsuario(usuario:Usuario):void {
         this.usuarios.push(usuario);
     }
-    agregarTitulo(titulo:Titulo) {
+    agregarTitulo(titulo:Titulo):void {
         this.titulos.push(titulo);
+    }
+    buscarUsuario(nombre:string): Usuario{
+        this.usuarios.forEach((item =>{
+            if(item.getUsername()==nombre) return item;
+        }))
+        return null;
+    }
+    buscarTitulo(nombre:string): Array<Titulo>{
+        let titulosConEseNombreAdentro:Array<Titulo>;
+        this.titulos.forEach((item =>{
+            if(item.getTitulo().indexOf(nombre)!=-1) titulosConEseNombreAdentro.push(item); //cuando indexOf devuelve -1 es que no se se encuentre ese subString en el string mas grande
+        }))
+        return titulosConEseNombreAdentro;
     }
 }
 
@@ -99,7 +112,7 @@ class Serie extends Titulo{
         return this.capitulos.length;
     }
     primerCapitulo():Contenido{
-        return this.capitulos[0]
+        return this.capitulos[0];
     }
 
 }
