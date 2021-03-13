@@ -1,4 +1,4 @@
-/*import { Region, Pelicula, Contenido, Serie, Usuario, Sistema}*/
+import { Region, Pelicula, Contenido, Serie, Usuario, Sistema} from "../clases";
 
 let IPMStreaming = new Sistema();
 
@@ -23,10 +23,11 @@ una_serie.agregarCapitulo(new Contenido(54)); // Capitulo 0 de 54 minutos.
 una_serie.agregarCapitulo(new Contenido(47)); // Capitulo 1 de 47 minutos.
 una_serie.agregarCapitulo(new Contenido(50)); // Capitulo 2 de 50 minutos.
 una_serie.agregarRegion(Region.AR);
+console.log(una_serie.sumaDeMinutos());
 IPMStreaming.agregarTitulo(una_serie);
 
 // Pruebas para la pelicula
-if(mi_usuario.ver(una_peli, 140)) console.log("Pepe no debería poder ver esa pelicula");
+/*if(mi_usuario.ver(una_peli, 140)) console.log("Pepe no debería poder ver esa pelicula");
 if(!otro_usuario.ver(una_peli, 100)) console.log("Juan debería poder ver esa pelicula");
 if(!otro_usuario.viendo(una_peli)) console.log("Juan todavía está viendo la peli");
 if(!otro_usuario.ver(una_peli, 40)) console.log("Juan debería poder retomar la pelicula");
@@ -47,4 +48,4 @@ if(!mi_usuario.viendo(una_serie)) console.log("Pepe todavía está viendo la ser
 if(mi_usuario.visto(una_serie)) console.log("Pepe todavía no terminó la serie");
 if(!mi_usuario.ver(una_serie, 5)) console.log("Pepe debería poder ver esa serie");
 if(mi_usuario.viendo(una_serie)) console.log("Pepe ya dejó de ver la serie");
-if(!mi_usuario.visto(una_serie)) console.log("Pepe vió la serie");
+if(!mi_usuario.visto(una_serie)) console.log("Pepe vió la serie");*/
