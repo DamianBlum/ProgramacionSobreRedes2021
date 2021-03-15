@@ -1,3 +1,5 @@
+
+
 export enum Region {
   AR,
   CH,
@@ -86,6 +88,7 @@ export class Titulo {
   }
 }
 
+
 export class Pelicula extends Titulo {
   private contenido: Contenido;
   constructor(titulo: string) {
@@ -129,14 +132,6 @@ export class Serie extends Titulo {
   }
 }
 
-  /*if(titulo instanceof Serie){
-    titulo.metodosSerie()
-  }
-  if(titulo instanceof Pelicula){
-
-  } */
-
-
 export class Usuario {
   private username: string;
   private region: Region;
@@ -146,7 +141,6 @@ export class Usuario {
     this.region = region;
     this.titulos= new Map();
   }
-
 
   getUsername() {
     return this.username;
@@ -200,6 +194,7 @@ export class Usuario {
         }
       }
     }
+    return true;
   }
   visto(titulo: Titulo):boolean {
     let tituloVisto:boolean=false;
@@ -237,15 +232,22 @@ export class Usuario {
     });
     return tituloEnVista;
   }
-  capituloActual(serie:Titulo):number {/*seguir a las 11:00*/ 
+  capituloActual(serie:Titulo):number {
     let capituloActual:number=0;
+    let minutos:number=0;
     this.titulos.forEach( (value,key) => {
       if(serie instanceof Serie){
         if (serie==key){
-          for (let index:number = 0; index < serie.getCapitulos().length; index++) {
-            const capitulo = serie.getCapitulos()[index];
-            
+          if(serie.sumaDeMinutos()!=value){
+            for (let index:number = 0; index < serie.getCapitulos().length; index++) {
+              const capitulo = serie.getCapitulos()[index];
+              if (value-minutos>=capitulo.getDuracion()) {
+                minutos=minutos+capitulo.getDuracion();
+                capituloActual++;
+              }
+            }
           }
+
           
         }
   
@@ -256,6 +258,7 @@ export class Usuario {
   }
 
 }
+
 
 
 
