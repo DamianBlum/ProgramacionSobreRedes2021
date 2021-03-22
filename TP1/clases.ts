@@ -136,10 +136,12 @@ export class Usuario {
   private username: string;
   private region: Region;
   private titulos: Map<Titulo, number>;
+  private capituloActualSerie:Map<Serie,number>;
   constructor(username: string, region: Region) {
     this.username = username;
     this.region = region;
     this.titulos= new Map();
+    this.capituloActualSerie= new Map();
   }
 
   getUsername() {
@@ -164,97 +166,87 @@ export class Usuario {
         else{
           let tiempo_ya_visto:number=this.titulos.get(titulo);
           if(titulo.getContenido().getDuracion()-tiempo_visualizado-tiempo_ya_visto<=0){
-            this.titulos.delete(titulo);
             this.titulos.set(titulo,titulo.getContenido().getDuracion());
           }
-          else{
-            this.titulos.delete(titulo);
+          else{   
             this.titulos.set(titulo,tiempo_ya_visto+tiempo_visualizado);
           }
         }
     }
     if(titulo instanceof Serie){
       if(!this.titulos.has(titulo)){
-        if(titulo.sumaDeMinutos()-tiempo_visualizado<=0){
-          this.titulos.set(titulo,titulo.sumaDeMinutos());
-        }
-        else{
-          this.titulos.set(titulo,tiempo_visualizado)
-        }
-      }
-      else{
-        let tiempo_ya_visto:number=this.titulos.get(titulo);
-        if(titulo.sumaDeMinutos()-tiempo_visualizado-tiempo_ya_visto<=0){
-          this.titulos.delete(titulo);
-          this.titulos.set(titulo,titulo.sumaDeMinutos());
-        }
-        else{
-          this.titulos.delete(titulo);
-          this.titulos.set(titulo,tiempo_ya_visto+tiempo_visualizado);
-        }
-      }
+
+        this.titulos.set(titulo,0);
+        this.capituloActualSerie.set(titulo,0);
+      } 
+      const tiempo_ya_visto:number=this.titulos.get(titulo);    
+      let tiempo_total=tiempo_visualizado+tiempo_ya_visto;  
+      
+        for (let i = this.capituloActualSerie.get(titulo); i < titulo.cantidadDeCapitulos(); i++) {
+          const capitulo_a_ver = titulo.getCapitulos()[i];
+          if (capitulo_a_ver.getDuracion()<=tiempo_total) {
+            tiempo_total=tiempo_total-capitulo_a_ver.getDuracion();
+            if(i+1==titulo.cantidadDeCapitulos()){
+              this.capituloActualSerie.set(titulo,0);
+              this.titulos.set(titulo,0);
+            }
+            else{
+              this.capituloActualSerie.set(titulo,i+1);
+            }
+
+          }
+          
+          else{
+            this.titulos.set(titulo,tiempo_total);
+            break;
+          }
+        }  
     }
     return true;
   }
   visto(titulo: Titulo):boolean {
     let tituloVisto:boolean=false;
-    this.titulos.forEach( (value,key) => {
-      if (titulo==key) {
+    
+      if (this.titulos.has(titulo)) {
         if(titulo instanceof Pelicula){
-          if(value==titulo.getContenido().getDuracion()){
+
+          if(this.titulos.get(titulo)==titulo.getContenido().getDuracion()){
             tituloVisto=true;
           }
         }
         else if (titulo instanceof Serie) {
-          if (value==titulo.sumaDeMinutos()) {
+          if (this.capituloActualSerie.get(titulo)==0 && this.titulos.get(titulo)==0) {
             tituloVisto=true;
           }
         }
       }
-    });
+    
     return tituloVisto;
   }
   viendo(titulo: Titulo):boolean {
     let tituloEnVista:boolean=false;
-    this.titulos.forEach( (value,key) => {
-      if (titulo==key) {
+    
+      if (this.titulos.has(titulo)) {
         if(titulo instanceof Pelicula){
-          if(value!=titulo.getContenido().getDuracion()){
+          if(this.titulos.get(titulo)!=titulo.getContenido().getDuracion()){
             tituloEnVista=true;
           }
         }
         else if (titulo instanceof Serie) {
-          if (value!=titulo.sumaDeMinutos()) {
+          if (this.capituloActualSerie.get(titulo)!=0 && this.titulos.get(titulo)!=0) {
             tituloEnVista=true;
           }
         }
       }
-    });
+    
     return tituloEnVista;
   }
   capituloActual(serie:Titulo):number {
-    let capituloActual:number=0;
-    let minutos:number=0;
-    this.titulos.forEach( (value,key) => {
-      if(serie instanceof Serie){
-        if (serie==key){
-          if(serie.sumaDeMinutos()!=value){
-            for (let index:number = 0; index < serie.getCapitulos().length; index++) {
-              const capitulo = serie.getCapitulos()[index];
-              if (value-minutos>=capitulo.getDuracion()) {
-                minutos=minutos+capitulo.getDuracion();
-                capituloActual++;
-              }
-            }
-          }
-
-          
-        }
-  
-      }
-    });
-    return capituloActual;
-
+    if (serie instanceof Serie) {
+      const capituloActual=this.capituloActualSerie.get(serie);
+      return capituloActual;
+    }
+    return null;
   }
 
 }

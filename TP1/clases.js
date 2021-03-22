@@ -155,6 +155,7 @@ var Usuario = /** @class */ (function () {
         this.username = username;
         this.region = region;
         this.titulos = new Map();
+        this.capituloActualSerie = new Map();
     }
     Usuario.prototype.getUsername = function () {
         return this.username;
@@ -178,33 +179,35 @@ var Usuario = /** @class */ (function () {
             else {
                 var tiempo_ya_visto = this.titulos.get(titulo);
                 if (titulo.getContenido().getDuracion() - tiempo_visualizado - tiempo_ya_visto <= 0) {
-                    this.titulos["delete"](titulo);
                     this.titulos.set(titulo, titulo.getContenido().getDuracion());
                 }
                 else {
-                    this.titulos["delete"](titulo);
                     this.titulos.set(titulo, tiempo_ya_visto + tiempo_visualizado);
                 }
             }
         }
         if (titulo instanceof Serie) {
             if (!this.titulos.has(titulo)) {
-                if (titulo.sumaDeMinutos() - tiempo_visualizado <= 0) {
-                    this.titulos.set(titulo, titulo.sumaDeMinutos());
-                }
-                else {
-                    this.titulos.set(titulo, tiempo_visualizado);
-                }
+                this.titulos.set(titulo, 0);
+                this.capituloActualSerie.set(titulo, 0);
             }
-            else {
-                var tiempo_ya_visto = this.titulos.get(titulo);
-                if (titulo.sumaDeMinutos() - tiempo_visualizado - tiempo_ya_visto <= 0) {
-                    this.titulos["delete"](titulo);
-                    this.titulos.set(titulo, titulo.sumaDeMinutos());
+            var tiempo_ya_visto = this.titulos.get(titulo);
+            var tiempo_total = tiempo_visualizado + tiempo_ya_visto;
+            for (var i = this.capituloActualSerie.get(titulo); i < titulo.cantidadDeCapitulos(); i++) {
+                var capitulo_a_ver = titulo.getCapitulos()[i];
+                if (capitulo_a_ver.getDuracion() <= tiempo_total) {
+                    tiempo_total = tiempo_total - capitulo_a_ver.getDuracion();
+                    if (i + 1 == titulo.cantidadDeCapitulos()) {
+                        this.capituloActualSerie.set(titulo, 0);
+                        this.titulos.set(titulo, 0);
+                    }
+                    else {
+                        this.capituloActualSerie.set(titulo, i + 1);
+                    }
                 }
                 else {
-                    this.titulos["delete"](titulo);
-                    this.titulos.set(titulo, tiempo_ya_visto + tiempo_visualizado);
+                    this.titulos.set(titulo, tiempo_total);
+                    break;
                 }
             }
         }
@@ -212,59 +215,42 @@ var Usuario = /** @class */ (function () {
     };
     Usuario.prototype.visto = function (titulo) {
         var tituloVisto = false;
-        this.titulos.forEach(function (value, key) {
-            if (titulo == key) {
-                if (titulo instanceof Pelicula) {
-                    if (value == titulo.getContenido().getDuracion()) {
-                        tituloVisto = true;
-                    }
-                }
-                else if (titulo instanceof Serie) {
-                    if (value == titulo.sumaDeMinutos()) {
-                        tituloVisto = true;
-                    }
+        if (this.titulos.has(titulo)) {
+            if (titulo instanceof Pelicula) {
+                if (this.titulos.get(titulo) == titulo.getContenido().getDuracion()) {
+                    tituloVisto = true;
                 }
             }
-        });
+            else if (titulo instanceof Serie) {
+                if (this.capituloActualSerie.get(titulo) == 0 && this.titulos.get(titulo) == 0) {
+                    tituloVisto = true;
+                }
+            }
+        }
         return tituloVisto;
     };
     Usuario.prototype.viendo = function (titulo) {
         var tituloEnVista = false;
-        this.titulos.forEach(function (value, key) {
-            if (titulo == key) {
-                if (titulo instanceof Pelicula) {
-                    if (value != titulo.getContenido().getDuracion()) {
-                        tituloEnVista = true;
-                    }
-                }
-                else if (titulo instanceof Serie) {
-                    if (value != titulo.sumaDeMinutos()) {
-                        tituloEnVista = true;
-                    }
+        if (this.titulos.has(titulo)) {
+            if (titulo instanceof Pelicula) {
+                if (this.titulos.get(titulo) != titulo.getContenido().getDuracion()) {
+                    tituloEnVista = true;
                 }
             }
-        });
+            else if (titulo instanceof Serie) {
+                if (this.capituloActualSerie.get(titulo) != 0 && this.titulos.get(titulo) != 0) {
+                    tituloEnVista = true;
+                }
+            }
+        }
         return tituloEnVista;
     };
     Usuario.prototype.capituloActual = function (serie) {
-        var capituloActual = 0;
-        var minutos = 0;
-        this.titulos.forEach(function (value, key) {
-            if (serie instanceof Serie) {
-                if (serie == key) {
-                    if (serie.sumaDeMinutos() != value) {
-                        for (var index = 0; index < serie.getCapitulos().length; index++) {
-                            var capitulo = serie.getCapitulos()[index];
-                            if (value - minutos >= capitulo.getDuracion()) {
-                                minutos = minutos + capitulo.getDuracion();
-                                capituloActual++;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        return capituloActual;
+        if (serie instanceof Serie) {
+            var capituloActual = this.capituloActualSerie.get(serie);
+            return capituloActual;
+        }
+        return null;
     };
     return Usuario;
 }());
