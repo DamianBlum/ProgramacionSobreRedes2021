@@ -1,3 +1,5 @@
+import { cpuUsage } from "node:process";
+
 var mysql = require("mysql");
 var connection = mysql.createConnection({
   host: "localhost",
@@ -53,35 +55,15 @@ class Compra extends TablaSQL {
     this.vendedor_calificado = vendedor_calificado;
   }
 
-  /*public static find(id: number): any {
-    connection.query(
-      `select * from compras where id=${id}`,
-      function (error, results) {
-        let compraJson = results[0];
-        var compra: Compra = new Compra(
-          compraJson.id,
-          compraJson.id_usuario,
-          compraJson.id_producto,
-          compraJson.cantidad,
-          "a",
-          compraJson.comprador_calificado,
-          compraJson.vendedor_calificado
-        );
-        console.log(compra);
-        return compra;
-      }
-      );
-      
-    }*/
+  /*undefined, promise {...}*/ 
 
-  public static find(id: number): any {
-    new Promise(async function (resolve,reject){
-    
-      let compra = await connection.query(
+  public  static async find(id: number): Promise<any>{
+
+        connection.query(
         `select * from compras where id=${id}`,
-        function (error, results) {
-          let compraJson = results[0];
-          var compra: Compra = new Compra(
+         function (error, results) {
+            let compraJson = results[0];
+            var compra: Compra = new Compra(
             compraJson.id,
             compraJson.id_usuario,
             compraJson.id_producto,
@@ -89,18 +71,20 @@ class Compra extends TablaSQL {
             "a",
             compraJson.comprador_calificado,
             compraJson.vendedor_calificado
-            
-            );
-            a = compra;
+          );
+          /*console.log(compra);*/
+          return compra;
         }
-      );
-      resolve(compra);
-    });
+        );
+      
+    }
   }
-  
-}
-console.log(Compra.find(1));
-setTimeout(function(){console.log(a)},100);
+
+
+Compra.find(1).then(function(result){console.log(result)});
+
+
+
 
 /*
 export class Favorito extends TablaSQL {

@@ -83,51 +83,32 @@ var Compra = /** @class */ (function (_super) {
         _this.vendedor_calificado = vendedor_calificado;
         return _this;
     }
-    /*public static find(id: number): any {
-      connection.query(
-        `select * from compras where id=${id}`,
-        function (error, results) {
-          let compraJson = results[0];
-          var compra: Compra = new Compra(
-            compraJson.id,
-            compraJson.id_usuario,
-            compraJson.id_producto,
-            compraJson.cantidad,
-            "a",
-            compraJson.comprador_calificado,
-            compraJson.vendedor_calificado
-          );
-          console.log(compra);
-          return compra;
-        }
-        );
-        
-      }*/
+    /*undefined, promise {...}*/
     Compra.find = function (id) {
-        new Promise(function (resolve, reject) {
-            return __awaiter(this, void 0, void 0, function () {
-                var compra;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, connection.query("select * from compras where id=" + id, function (error, results) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, connection.query("select * from compras where id=" + id, function (error, results) {
+                            if (error)
+                                throw error;
+                            else {
                                 var compraJson = results[0];
                                 var compra = new Compra(compraJson.id, compraJson.id_usuario, compraJson.id_producto, compraJson.cantidad, "a", compraJson.comprador_calificado, compraJson.vendedor_calificado);
-                                a = compra;
-                            })];
-                        case 1:
-                            compra = _a.sent();
-                            resolve(compra);
-                            return [2 /*return*/];
-                    }
-                });
+                            }
+                            /*console.log(compra);*/
+                            return compra;
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
             });
         });
     };
     return Compra;
 }(TablaSQL));
 exports.Compra = Compra;
-console.log(Compra.find(1));
-setTimeout(function () { console.log(a); }, 100);
+(Compra.find(1)).then(function (result) { console.log(result); });
 /*
 export class Favorito extends TablaSQL {
   public id: number;
