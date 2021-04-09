@@ -1,4 +1,4 @@
-import { cpuUsage } from "node:process";
+// CONEXIÓN MYSQL
 
 var mysql = require("mysql");
 var connection = mysql.createConnection({
@@ -9,25 +9,45 @@ var connection = mysql.createConnection({
   port: "3306",
 });
 connection.connect();
-var a: Compra;
-export { TablaSQL, Compra };
 
-abstract class TablaSQL {
-  public query: string;
+// CLASE ABSTRACTA DE LA QUE DERIVAN TODAS LAS CLASES
+
+export abstract class TablaSQL {
+  protected static query: string = "";
 
   constructor() {
-    this.query = "";
   }
 
   public static find(id: number) {}
+  public static where(
+    column: string,
+    conditional: string,
+    value: string
+  ): void {
+    if (this.query.includes("where")) {
+      this.query += ` && ${column} ${conditional} ${value}`;
+    } else {
+      this.query += ` where ${column} ${conditional} ${value}`;
+    }
+    console.log(this.query);
+  }
 
-  //save - update id = id
-  //where - agrega una sentencia where al query
+  public static orderBy(
+    value: string
+  ): void {
+    if (this.query.includes("order by")) {
+      this.query += `, ${value}`;
+    } else {
+      this.query += `order by ${value}`;
+    }
+    console.log(this.query);
+  }
+
   //orderby - agrega una sentencia orderby al query
   //get - ejecuta el query
 }
 
-class Compra extends TablaSQL {
+export class Compra extends TablaSQL {
   public id: number;
   public id_usuario: number;
   public id_producto: number;
@@ -55,15 +75,13 @@ class Compra extends TablaSQL {
     this.vendedor_calificado = vendedor_calificado;
   }
 
-  /*undefined, promise {...}*/ 
-
-  public  static async find(id: number): Promise<any>{
-
-        connection.query(
+  public static find(id: number): any {
+    return new Promise((resolve, reject) => {
+      connection.query(
         `select * from compras where id=${id}`,
-         function (error, results) {
-            let compraJson = results[0];
-            var compra: Compra = new Compra(
+        function (error, results) {
+          let compraJson = results[0];
+          var compra: Compra = new Compra(
             compraJson.id,
             compraJson.id_usuario,
             compraJson.id_producto,
@@ -72,19 +90,30 @@ class Compra extends TablaSQL {
             compraJson.comprador_calificado,
             compraJson.vendedor_calificado
           );
-          /*console.log(compra);*/
-          return compra;
+          
+          resolve(compra);
         }
-        );
-      
-    }
+      );
+    });
+    
   }
 
+  public save(): void {
+    connection.query(
+      `update Compras set id_usuario = ${this.id_usuario}, id_producto = ${this.id_producto}, cantidad = ${this.cantidad}, fecha = "${this.fecha}", comprador_calificado = ${this.comprador_calificado}, vendedor_calificado = ${this.vendedor_calificado}  where id = ${this.id}`
+    );
+  }
+  
+}
 
-Compra.find(1).then(function(result){console.log(result)});
-
-
-
+//TESTEAR
+Compra.find(1).then(
+  function(result) {console.log(result)},
+  function(error) {console.log(error)}
+);
+/*let compra: Compra = new Compra(1, 3, 2, 5, "a", false, false);
+compra.save();
+Compra.where("2", ">", "1");*/
 
 /*
 export class Favorito extends TablaSQL {
@@ -124,6 +153,12 @@ export class Producto extends TablaSQL {
     this.stock = stock;
     this.usado = usado;
   }
+
+  public save(): void {
+    connection.query(
+      `update Producto set vendedor = ${this.vendedor}, nombre = ${this.nombre}, precio = "${this.precio}", stock = ${this.stock}, usado = ${this.usado}  where id = ${this.id}`
+    );
+  }
 }
 
 export class Usuario extends TablaSQL {
@@ -147,6 +182,11 @@ export class Usuario extends TablaSQL {
     this.calificacion_vendedor = calificacion_vendedor;
     this.calificacion_comprador = calificacion_comprador;
   }
+
+  public save(): void {
+    connection.query(
+      `update Producto set username = ${this.username}, saldo = ${this.saldo}, calificacion_vendedor = "${this.calificacion_vendedor}", calificacion_comprador = ${this.calificacion_comprador} where id = ${this.id}`
+  );
 }
 
 export class CalificacionesVendedor extends TablaSQL {
@@ -170,6 +210,11 @@ export class CalificacionesVendedor extends TablaSQL {
     this.calificacion = calificacion;
     this.fecha = fecha;
   }
+  
+    public save(): void {
+    connection.query(
+      `update calificaciones_vendedor set calificacion = "${this.calificacion}", fecha = ${this.fecha} where id = ${this.id}`
+  );
 }
 
 export class CalificacionesComprador extends TablaSQL {
@@ -194,15 +239,7 @@ export class CalificacionesComprador extends TablaSQL {
     this.fecha = fecha;
   }
 
-    public static find(id: number): any {
-    connection.query(
-        `select * from usuarios where id=${id}`,
-        function (error, results) {
-            console.log(results[0].username);
-            return new Compra(compraJson.id, compraJson.id, compraJson.id, compraJson.id, compraJson.id, compraJson.id, compraJson.id);
-        }
-      );
+
   }
-    }
 }
 */
