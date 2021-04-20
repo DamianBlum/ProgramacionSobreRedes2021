@@ -1,0 +1,3 @@
+tsc prueba.ts
+
+node prueba.ts

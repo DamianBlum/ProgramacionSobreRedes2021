@@ -52,20 +52,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.Compra = exports.TablaSQL = void 0;
+exports.CalificacionesComprador = exports.CalificacionesVendedor = exports.Usuario = exports.Producto = exports.Favorito = exports.Compra = exports.TablaSQL = void 0;
 var mysql = require("mysql");
 var connection = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "password",
-    database: "laboratorio",
+    database: "e_commerce",
     port: "3306"
 });
 connection.connect();
 // CLASE ABSTRACTA DE LA QUE DERIVAN TODAS LAS CLASES
+function fechaMYSQL(fecha) {
+    return fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate() + " " + fecha.getHours() + "-" + fecha.getMinutes() + "-" + fecha.getSeconds();
+}
 var TablaSQL = /** @class */ (function () {
     function TablaSQL() {
     }
+    TablaSQL.get = function () { };
     TablaSQL.find = function (id) { };
     TablaSQL.where = function (column, conditional, value) {
         if (this.query.includes("where")) {
@@ -74,16 +78,16 @@ var TablaSQL = /** @class */ (function () {
         else {
             this.query += " where " + column + " " + conditional + " " + value;
         }
-        console.log(this.query);
+        return this;
     };
     TablaSQL.orderBy = function (value) {
         if (this.query.includes("order by")) {
             this.query += ", " + value;
         }
         else {
-            this.query += "order by " + value;
+            this.query += " order by " + value;
         }
-        console.log(this.query);
+        return this;
     };
     TablaSQL.query = "";
     return TablaSQL;
@@ -102,51 +106,36 @@ var Compra = /** @class */ (function (_super) {
         _this.vendedor_calificado = vendedor_calificado;
         return _this;
     }
-    Compra.prototype.save = function () {
-        connection.query("update Compras set id_usuario = " + this.id_usuario + ", id_producto = " + this.id_producto + ", cantidad = " + this.cantidad + ", fecha = \"" + this.fecha + "\", comprador_calificado = " + this.comprador_calificado + ", vendedor_calificado = " + this.vendedor_calificado + "  where id = " + this.id);
+    Compra.get = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from compras " + _this.query, function (error, results) {
+                var compras = new Set();
+                results.forEach(function (compraJson) {
+                    var compra = new Compra(compraJson.id, compraJson.id_usuario, compraJson.id_producto, compraJson.cantidad, compraJson.fecha, compraJson.comprador_calificado, compraJson.vendedor_calificado);
+                    compras.add(compra);
+                });
+                resolve(compras);
+            });
+        });
     };
-    /*public static get(): any{
-      return new Promise((resolve, reject) => {
-        connection.query(
-          `select * from compras ${query}`, ver lo de query pero seria asi
-          function (error, results) {
-            let compraJson = results[0];
-            var compra: Compra = new Compra(
-              compraJson.id,
-              compraJson.id_usuario,
-              compraJson.id_producto,
-              compraJson.cantidad,
-              "a",
-              compraJson.comprador_calificado,
-              compraJson.vendedor_calificado
-            );
-            
-            resolve(compra);
-          }
-        );
-      });
-    }*/
-    Compra.prototype.b = function (id) {
-        var promesa = new Promise(function (resolve, reject) {
+    Compra.find = function (id) {
+        return new Promise(function (resolve, reject) {
             connection.query("select * from compras where id=" + id, function (error, results) {
                 var compraJson = results[0];
-                var compra = new Compra(compraJson.id, compraJson.id_usuario, compraJson.id_producto, compraJson.cantidad, "a", compraJson.comprador_calificado, compraJson.vendedor_calificado);
+                var compra = new Compra(compraJson.id, compraJson.id_usuario, compraJson.id_producto, compraJson.cantidad + 1, compraJson.fecha, compraJson.comprador_calificado, compraJson.vendedor_calificado);
                 resolve(compra);
             });
         });
-        promesa.then(function (resultado) {
-            return resultado;
-        });
     };
-    Compra.prototype.find = function (id) {
+    Compra.prototype.save = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var x;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.b(id)];
+                    case 0: return [4 /*yield*/, connection.query("DELETE FROM compras where id = " + this.id)];
                     case 1:
-                        x = _a.sent();
-                        console.log(x);
+                        _a.sent();
+                        connection.query("INSERT INTO compras VALUE(" + this.id_usuario + ", " + this.id_producto + ", " + this.cantidad + ", '" + fechaMYSQL(this.fecha) + "', " + this.comprador_calificado + ", " + this.vendedor_calificado + ")");
                         return [2 /*return*/];
                 }
             });
@@ -155,139 +144,247 @@ var Compra = /** @class */ (function (_super) {
     return Compra;
 }(TablaSQL));
 exports.Compra = Compra;
-//TESTEAR
-Compra.find(1);
-/*let compra: Compra = new Compra(1, 3, 2, 5, "a", false, false);
-compra.save();
-Compra.where("2", ">", "1");*/
-/*
-export class Favorito extends TablaSQL {
-  public id: number;
-  public id_usuario: number;
-  public id_producto: number;
-
-  constructor(id: number, id_usuario: number, id_producto: number) {
-    super();
-    this.id = id;
-    this.id_usuario = id_usuario;
-    this.id_producto = id_producto;
-  }
-}
-
-export class Producto extends TablaSQL {
-  public id: number;
-  public vendedor: number;
-  public nombre: string;
-  public precio: number;
-  public stock: number;
-  public usado: boolean;
-
-  constructor(
-    id: number,
-    vendedor: number,
-    nombre: string,
-    precio: number,
-    stock: number,
-    usado: boolean
-  ) {
-    super();
-    this.id = id;
-    this.vendedor = vendedor;
-    this.nombre = nombre;
-    this.precio = precio;
-    this.stock = stock;
-    this.usado = usado;
-  }
-
-  public save(): void {
-    connection.query(
-      `update Producto set vendedor = ${this.vendedor}, nombre = ${this.nombre}, precio = "${this.precio}", stock = ${this.stock}, usado = ${this.usado}  where id = ${this.id}`
-    );
-  }
-}
-
-export class Usuario extends TablaSQL {
-  public id: number;
-  public username: string;
-  public saldo: number;
-  public calificacion_vendedor: number;
-  public calificacion_comprador: number;
-
-  constructor(
-    id: number,
-    username: string,
-    saldo: number,
-    calificacion_vendedor: number,
-    calificacion_comprador: number
-  ) {
-    super();
-    this.id = id;
-    this.username = username;
-    this.saldo = saldo;
-    this.calificacion_vendedor = calificacion_vendedor;
-    this.calificacion_comprador = calificacion_comprador;
-  }
-
-  public save(): void {
-    connection.query(
-      `update Producto set username = ${this.username}, saldo = ${this.saldo}, calificacion_vendedor = "${this.calificacion_vendedor}", calificacion_comprador = ${this.calificacion_comprador} where id = ${this.id}`
-  );
-}
-
-export class CalificacionesVendedor extends TablaSQL {
-  public id: number;
-  public id_vendedor: number;
-  public id_comprador: number;
-  public calificacion: number;
-  public fecha: Date;
-
-  constructor(
-    id: number,
-    id_vendedor: number,
-    id_comprador: number,
-    calificacion: number,
-    fecha: Date
-  ) {
-    super();
-    this.id = id;
-    this.id_vendedor = id_vendedor;
-    this.id_comprador = id_comprador;
-    this.calificacion = calificacion;
-    this.fecha = fecha;
-  }
-  
-    public save(): void {
-    connection.query(
-      `update calificaciones_vendedor set calificacion = "${this.calificacion}", fecha = ${this.fecha} where id = ${this.id}`
-  );
-}
-
-export class CalificacionesComprador extends TablaSQL {
-  public id: number;
-  public id_comprador: number;
-  public id_vendedor: number;
-  public calificacion: number;
-  public fecha: string;
-
-  constructor(
-    id: number,
-    id_comprador: number,
-    id_vendedor: number,
-    calificacion: number,
-    fecha: string
-  ) {
-    super();
-    this.id = id;
-    this.id_comprador = id_comprador;
-    this.id_vendedor = id_vendedor;
-    this.calificacion = calificacion;
-    this.fecha = fecha;
-  }
-
-  public save(): void {
-    connection.query(
-      `update calificaciones_vendedor set calificacion = "${this.calificacion}", fecha = ${this.fecha} where id = ${this.id}`
-  );
-  }
-}
-*/
+var Favorito = /** @class */ (function (_super) {
+    __extends(Favorito, _super);
+    function Favorito(id, id_usuario, id_producto) {
+        var _this = _super.call(this) || this;
+        _this.id = id;
+        _this.id_usuario = id_usuario;
+        _this.id_producto = id_producto;
+        return _this;
+    }
+    Favorito.get = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from favoritos " + _this.query, function (error, results) {
+                var favoritos = new Set();
+                results.forEach(function (favoritoJson) {
+                    var favorito = new Favorito(favoritoJson.id, favoritoJson.id_usuario, favoritoJson.id_producto);
+                    favoritos.add(favorito);
+                });
+                resolve(favoritos);
+            });
+        });
+    };
+    Favorito.find = function (id) {
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from favoritos where id=" + id, function (error, results) {
+                var favoritoJson = results[0];
+                var favorito = new Favorito(favoritoJson.id, favoritoJson.id_usuario, favoritoJson.id_producto);
+                resolve(favorito);
+            });
+        });
+    };
+    Favorito.prototype.save = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, connection.query("DELETE FROM favoritos where id = " + this.id)];
+                    case 1:
+                        _a.sent();
+                        connection.query("INSERT INTO favoritos VALUE(" + this.id + " ," + this.id_usuario + ", " + this.id_producto + ")");
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return Favorito;
+}(TablaSQL));
+exports.Favorito = Favorito;
+var Producto = /** @class */ (function (_super) {
+    __extends(Producto, _super);
+    function Producto(id, vendedor, nombre, precio, stock, usado) {
+        var _this = _super.call(this) || this;
+        _this.id = id;
+        _this.vendedor = vendedor;
+        _this.nombre = nombre;
+        _this.precio = precio;
+        _this.stock = stock;
+        _this.usado = usado;
+        return _this;
+    }
+    Producto.get = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from productos " + _this.query, function (error, results) {
+                var productos = new Set();
+                results.forEach(function (productoJson) {
+                    var producto = new Producto(productoJson.id, productoJson.vendedor, productoJson.nombre, productoJson.precio, productoJson.stock, productoJson.usado);
+                    productos.add(producto);
+                });
+                resolve(productos);
+            });
+        });
+    };
+    Producto.find = function (id) {
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from compras where id=" + id, function (error, results) {
+                var productoJson = results[0];
+                var producto = new Producto(productoJson.id, productoJson.vendedor, productoJson.nombre, productoJson.precio, productoJson.stock, productoJson.usado);
+                resolve(producto);
+            });
+        });
+    };
+    Producto.prototype.save = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, connection.query("DELETE FROM producto where id = " + this.id)];
+                    case 1:
+                        _a.sent();
+                        connection.query("INSERT INTO producto VALUE(" + this.id + " ," + this.vendedor + ", " + this.nombre + ", " + this.precio + " ," + this.stock + ", " + this.usado + ")");
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return Producto;
+}(TablaSQL));
+exports.Producto = Producto;
+var Usuario = /** @class */ (function (_super) {
+    __extends(Usuario, _super);
+    function Usuario(id, username, saldo, calificacion_vendedor, calificacion_comprador) {
+        var _this = _super.call(this) || this;
+        _this.id = id;
+        _this.username = username;
+        _this.saldo = saldo;
+        _this.calificacion_vendedor = calificacion_vendedor;
+        _this.calificacion_comprador = calificacion_comprador;
+        return _this;
+    }
+    Usuario.get = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from usuarios " + _this.query, function (error, results) {
+                var usuarios = new Set();
+                results.forEach(function (usuarioJson) {
+                    var usuario = new Usuario(usuarioJson.id, usuarioJson.username, usuarioJson.saldo, usuarioJson.calificacion_vendedor, usuarioJson.calificacion_comprador);
+                    usuarios.add(usuario);
+                });
+                resolve(usuarios);
+            });
+        });
+    };
+    Usuario.find = function (id) {
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from usuarios where id = " + id, function (error, results) {
+                var usuarioJson = results[0];
+                var usuario = new Usuario(usuarioJson.id, usuarioJson.username, usuarioJson.saldo, usuarioJson.calificacion_vendedor, usuarioJson.calificacion_comprador);
+                resolve(usuario);
+            });
+        });
+    };
+    Usuario.prototype.save = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, connection.query("DELETE FROM usuarios where id = " + this.id)];
+                    case 1:
+                        _a.sent();
+                        connection.query("INSERT INTO usuarios VALUE(" + this.id + " ," + this.username + ", " + this.saldo + ", " + this.calificacion_vendedor + " ," + this.calificacion_comprador + ")");
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return Usuario;
+}(TablaSQL));
+exports.Usuario = Usuario;
+var CalificacionesVendedor = /** @class */ (function (_super) {
+    __extends(CalificacionesVendedor, _super);
+    function CalificacionesVendedor(id, id_vendedor, id_comprador, calificacion, fecha) {
+        var _this = _super.call(this) || this;
+        _this.id = id;
+        _this.id_vendedor = id_vendedor;
+        _this.id_comprador = id_comprador;
+        _this.calificacion = calificacion;
+        _this.fecha = fecha;
+        return _this;
+    }
+    CalificacionesVendedor.get = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from calificaciones_vendedores " + _this.query, function (error, results) {
+                var calificaciones_vendedores = new Set();
+                results.array.forEach(function (calificacionVendedorJson) {
+                    var calificacionVendedor = new CalificacionesVendedor(calificacionVendedorJson.id, calificacionVendedorJson.id_vendedor, calificacionVendedorJson.id_comprador, calificacionVendedorJson.calificacion, calificacionVendedorJson.fecha);
+                    calificaciones_vendedores.add(calificacionVendedor);
+                });
+                resolve(calificaciones_vendedores);
+            });
+        });
+    };
+    CalificacionesVendedor.find = function (id) {
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from calificaciones_vendedores where id=" + id, function (error, results) {
+                var calificacionVendedorJson = results[0];
+                var calificacionVendedor = new CalificacionesVendedor(calificacionVendedorJson.id, calificacionVendedorJson.id_vendedor, calificacionVendedorJson.id_comprador, calificacionVendedorJson.calificacion, calificacionVendedorJson.fecha);
+                resolve(calificacionVendedor);
+            });
+        });
+    };
+    CalificacionesVendedor.prototype.save = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, connection.query("DELETE FROM calificaciones_vendedores where id = " + this.id)];
+                    case 1:
+                        _a.sent();
+                        connection.query("insert into calificaciones_vendedores values(" + this.id + "," + this.id_vendedor + "," + this.id_comprador + "," + this.calificacion + "," + fechaMYSQL(this.fecha) + ") ON DUPLICATE KEY UPDATE id_vendedor = " + this.id_vendedor + ", id_comprador = " + this.id_comprador + ", calificacion = \"" + this.calificacion + "\", fecha = '" + fechaMYSQL(this.fecha) + "'");
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return CalificacionesVendedor;
+}(TablaSQL));
+exports.CalificacionesVendedor = CalificacionesVendedor;
+var CalificacionesComprador = /** @class */ (function (_super) {
+    __extends(CalificacionesComprador, _super);
+    function CalificacionesComprador(id, id_comprador, id_vendedor, calificacion, fecha) {
+        var _this = _super.call(this) || this;
+        _this.id = id;
+        _this.id_comprador = id_comprador;
+        _this.id_vendedor = id_vendedor;
+        _this.calificacion = calificacion;
+        _this.fecha = fecha;
+        return _this;
+    }
+    CalificacionesComprador.find = function (id) {
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from calificaciones_compradores where id=" + id, function (error, results) {
+                var calficacionCompradorJson = results[0];
+                var CalificacionDelComprador = new CalificacionesComprador(calficacionCompradorJson.id, calficacionCompradorJson.id_comprador, calficacionCompradorJson.id_vendedor, calficacionCompradorJson.calificacion, calficacionCompradorJson.fecha);
+                resolve(CalificacionDelComprador);
+            });
+        });
+    };
+    CalificacionesComprador.get = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            connection.query("select * from calificaciones_compradores " + _this.query, function (error, results) {
+                var calificaciones_compradores = new Set();
+                results.array.forEach(function (calificacionCompradorJson) {
+                    var calificacionComprador = new CalificacionesComprador(calificacionCompradorJson.id, calificacionCompradorJson.id_vendedor, calificacionCompradorJson.id_comprador, calificacionCompradorJson.calificacion, calificacionCompradorJson.fecha);
+                    calificaciones_compradores.add(calificacionComprador);
+                });
+                resolve(calificaciones_compradores);
+            });
+        });
+    };
+    CalificacionesComprador.prototype.save = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, connection.query("DELETE FROM calificaciones_comprador where id = " + this.id)];
+                    case 1:
+                        _a.sent();
+                        connection.query("insert into calificaciones_comprador values(" + this.id + "," + this.id_comprador + "," + this.id_vendedor + "," + this.calificacion + "," + fechaMYSQL(this.fecha) + ") ON DUPLICATE KEY UPDATE id_comprador = " + this.id_comprador + ", id_vendedor = " + this.id_vendedor + ", calificacion = \"" + this.calificacion + "\", fecha = '" + fechaMYSQL(this.fecha) + "'");
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return CalificacionesComprador;
+}(TablaSQL));
+exports.CalificacionesComprador = CalificacionesComprador;
