@@ -176,11 +176,15 @@ app.post('/usuarios/:id_usuario/calificaciones', function (req, res) { return __
                 console.log(productoDeLaCompra);
                 if (compraRecibida.id_usuario == idCalificante) {
                     //connection.query(`insert into calificaciones_vendedores values(${compraRecibida.vendedor_calificado},${productoDeLaCompra.id_vendedor},${idCalificante},${Calificacion},${compraRecibida.fecha})`,function(error,resutls){
-                    console.log("If");
+                    //califica el comprador al vendedor
+                    new clases_1.CalificacionesVendedor(null, productoDeLaCompra.vendedor, idCalificante, Calificacion, new Date()).save();
+                    res.send("Insertado con exito la calificacion al vendedor");
                 }
                 else {
                     //connection.query(`insert into calificaciones_compradores values(${compraRecibida.comprador_calificado},${compraRecibida.id_usuario},${idCalificante},${Calificacion},${compraRecibida.fecha})`,function(error,resutls){
-                    console.log("else");
+                    //califica el vendedor al comprador
+                    new clases_1.CalificacionesComprador(null, compraRecibida.id_usuario, idCalificante, Calificacion, new Date()).save();
+                    res.send("Insertado con exito la calificacion al comprador");
                 }
                 return [2 /*return*/];
         }

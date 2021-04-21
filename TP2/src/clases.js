@@ -378,10 +378,10 @@ var CalificacionesComprador = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, connection.query("DELETE FROM calificaciones_comprador where id = " + this.id)];
+                    case 0: return [4 /*yield*/, connection.query("DELETE FROM calificaciones_compradores where id = " + this.id)];
                     case 1:
                         _a.sent();
-                        connection.query("insert into calificaciones_comprador values(" + this.id + "," + this.id_comprador + "," + this.id_vendedor + "," + this.calificacion + "," + fechaMYSQL(this.fecha) + ") ON DUPLICATE KEY UPDATE id_comprador = " + this.id_comprador + ", id_vendedor = " + this.id_vendedor + ", calificacion = \"" + this.calificacion + "\", fecha = '" + fechaMYSQL(this.fecha) + "'");
+                        connection.query("insert into calificaciones_compradores values(" + this.id + "," + this.id_comprador + "," + this.id_vendedor + "," + this.calificacion + "," + fechaMYSQL(this.fecha) + ")");
                         return [2 /*return*/];
                 }
             });

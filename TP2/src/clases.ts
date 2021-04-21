@@ -514,10 +514,10 @@ export class CalificacionesComprador extends TablaSQL {
   }
   public async save(): Promise<void> {
     await connection.query(
-      `DELETE FROM calificaciones_comprador where id = ${this.id}`
+      `DELETE FROM calificaciones_compradores where id = ${this.id}`
     );
     connection.query(
-      `insert into calificaciones_comprador values(${this.id},${this.id_comprador},${this.id_vendedor},${this.calificacion},${fechaMYSQL(this.fecha)}) ON DUPLICATE KEY UPDATE id_comprador = ${this.id_comprador}, id_vendedor = ${this.id_vendedor}, calificacion = "${this.calificacion}", fecha = '${fechaMYSQL(this.fecha)}'`
+      `insert into calificaciones_compradores values(${this.id},${this.id_comprador},${this.id_vendedor},${this.calificacion},${fechaMYSQL(this.fecha)})`
     );
   }
 }
