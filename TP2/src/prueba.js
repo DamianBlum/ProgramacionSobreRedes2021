@@ -119,6 +119,7 @@ app["delete"]('/usuarios/:id_usuario/fav', function (req, res) { return __awaite
         }
     });
 }); });
+//JOYA
 app.get('/usuarios/:id_usuario/compras', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var compra;
     return __generator(this, function (_a) {
@@ -126,25 +127,32 @@ app.get('/usuarios/:id_usuario/compras', function (req, res) { return __awaiter(
             case 0: return [4 /*yield*/, clases_1.Compra.where("id_usuario", "=", "" + req.params.id_usuario).get()];
             case 1:
                 compra = _a.sent();
-                res.send(Array.from(compra));
+                if (compra.size > 0)
+                    res.send(Array.from(compra));
+                else
+                    res.send("El usuario seleccionado no tiene compras previas");
                 return [2 /*return*/];
         }
     });
 }); });
+//JOYA
 app.post('/usuarios/:id_usuario/compras', function (req, res) {
-    connection.query("insert into compras values(null," + req.params.id_usuario + "," + req.params.id_usu + ")", function (error, results) {
-    });
+    new clases_1.Compra(null, req.params.id_usuario, req.query.id_producto, req.query.cantidad, new Date(), false, false).save();
+    res.send("Insertado con exito");
 });
+//JOYA
 app.get('/usuarios/:id_usuario/calificaciones', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var calificacionesComprador, calificacionesVendedor;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, clases_1.CalificacionesComprador.get()];
+            case 0: return [4 /*yield*/, clases_1.CalificacionesComprador.where("id_comprador", "=", "" + req.params.id_usuario).get()];
             case 1:
                 calificacionesComprador = _a.sent();
-                return [4 /*yield*/, clases_1.CalificacionesVendedor.get()];
+                return [4 /*yield*/, clases_1.CalificacionesVendedor.where("id_comprador", "=", "" + req.params.id_usuario).get()];
             case 2:
                 calificacionesVendedor = _a.sent();
+                calificacionesVendedor.forEach(calificacionesComprador.add, calificacionesComprador);
+                res.send(Array.from(calificacionesComprador));
                 return [2 /*return*/];
         }
     });
@@ -155,36 +163,24 @@ app.post('/usuarios/:id_usuario/calificaciones', function (req, res) { return __
         switch (_a.label) {
             case 0:
                 idCalificante = req.query.id_calificante;
-                console.log(idCalificante);
                 idOperacion = req.query.id_operacion;
-                console.log(idOperacion);
                 Calificacion = req.query.calificacion;
-                console.log(Calificacion);
                 return [4 /*yield*/, clases_1.Compra.find(idOperacion)];
             case 1:
                 compraRecibida = _a.sent();
                 console.log(compraRecibida);
+                console.log(compraRecibida.id_producto);
                 return [4 /*yield*/, clases_1.Producto.find(compraRecibida.id_producto)];
             case 2:
                 productoDeLaCompra = _a.sent();
                 console.log(productoDeLaCompra);
                 if (compraRecibida.id_usuario == idCalificante) {
-                    connection.query("insert into calificaciones_vendedores values(" + compraRecibida.vendedor_calificado + "," + productoDeLaCompra.id_vendedor + "," + idCalificante + "," + Calificacion + "," + compraRecibida.fecha + ")", function (error, resutls) {
-                        if (error)
-                            throw error;
-                        else {
-                            res.send("La calificacion al vendedor se realizo correctamente");
-                        }
-                    });
+                    //connection.query(`insert into calificaciones_vendedores values(${compraRecibida.vendedor_calificado},${productoDeLaCompra.id_vendedor},${idCalificante},${Calificacion},${compraRecibida.fecha})`,function(error,resutls){
+                    console.log("If");
                 }
                 else {
-                    connection.query("insert into calificaciones_compradores values(" + compraRecibida.comprador_calificado + "," + compraRecibida.id_usuario + "," + idCalificante + "," + Calificacion + "," + compraRecibida.fecha + ")", function (error, resutls) {
-                        if (error)
-                            throw error;
-                        else {
-                            res.send("La calificacion al comprador se realizo correctamente");
-                        }
-                    });
+                    //connection.query(`insert into calificaciones_compradores values(${compraRecibida.comprador_calificado},${compraRecibida.id_usuario},${idCalificante},${Calificacion},${compraRecibida.fecha})`,function(error,resutls){
+                    console.log("else");
                 }
                 return [2 /*return*/];
         }
@@ -193,18 +189,3 @@ app.post('/usuarios/:id_usuario/calificaciones', function (req, res) { return __
 app.listen(port, function () {
     console.log("App listening at http://localhost:" + port);
 });
-function a() {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a, _b;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    _b = (_a = console).log;
-                    return [4 /*yield*/, clases_1.Favorito.get()];
-                case 1:
-                    _b.apply(_a, [_c.sent()]);
-                    return [2 /*return*/];
-            }
-        });
-    });
-}

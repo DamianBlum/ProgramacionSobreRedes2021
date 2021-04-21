@@ -76,65 +76,56 @@ app.delete('/usuarios/:id_usuario/fav', async (req,res) => {
   }
 })
 
+//JOYA
 app.get('/usuarios/:id_usuario/compras', async (req,res) =>{
   let compra: Set<Compra> = await Compra.where(`id_usuario`,`=`,`${req.params.id_usuario}`).get();
   if (compra.size > 0) res.send(Array.from(compra));
   else res.send("El usuario seleccionado no tiene compras previas");
 })
-  
+
+//JOYA
 app.post('/usuarios/:id_usuario/compras', (req,res) =>{
 
+  new Compra(null,req.params.id_usuario,req.query.id_producto,req.query.cantidad,new Date(),false,false).save()
+  res.send("Insertado con exito");
 
-  connection.query(`insert into compras values(null,${req.params.id_usuario},${req.params.id_usu})`,function (error, results){
-
-  });
-  
 })
 
+//JOYA
 app.get('/usuarios/:id_usuario/calificaciones', async(req,res) =>{
-  let calificacionesComprador= await CalificacionesComprador.get(); 
-  let calificacionesVendedor= await CalificacionesVendedor.get();  
+  let calificacionesComprador:Set<CalificacionesComprador>= await CalificacionesComprador.where(`id_comprador`,`=`,`${req.params.id_usuario}`).get(); 
+  let calificacionesVendedor:Set<CalificacionesVendedor>= await CalificacionesVendedor.where(`id_comprador`,`=`,`${req.params.id_usuario}`).get(); 
+
+  calificacionesVendedor.forEach(calificacionesComprador.add, calificacionesComprador);
+
+  res.send( Array.from(calificacionesComprador));
 })
 
 app.post('/usuarios/:id_usuario/calificaciones', async(req,res) =>{
 
   let idCalificante = req.query.id_calificante;
-  console.log(idCalificante);
   let idOperacion = req.query.id_operacion;
-  console.log(idOperacion);
   let Calificacion = req.query.calificacion;
-  console.log(Calificacion);
   let compraRecibida = await Compra.find(idOperacion);
   console.log(compraRecibida);
+  console.log(compraRecibida.id_producto);
   let productoDeLaCompra = await Producto.find(compraRecibida.id_producto);
   console.log(productoDeLaCompra);
   if(compraRecibida.id_usuario==idCalificante){
-    connection.query(`insert into calificaciones_vendedores values(${compraRecibida.vendedor_calificado},${productoDeLaCompra.id_vendedor},${idCalificante},${Calificacion},${compraRecibida.fecha})`,function(error,resutls){
-      if(error) throw error;
-
-      else{
-        res.send("La calificacion al vendedor se realizo correctamente");
-      }
-    });
+    //connection.query(`insert into calificaciones_vendedores values(${compraRecibida.vendedor_calificado},${productoDeLaCompra.id_vendedor},${idCalificante},${Calificacion},${compraRecibida.fecha})`,function(error,resutls){
+    //califica el comprador al vendedor
+    new CalificacionesVendedor(null,productoDeLaCompra.vendedor,idCalificante,Calificacion,new Date()).save();
+    res.send("Insertado con exito la calificacion al vendedor");
   }
-
   else{
-    connection.query(`insert into calificaciones_compradores values(${compraRecibida.comprador_calificado},${compraRecibida.id_usuario},${idCalificante},${Calificacion},${compraRecibida.fecha})`,function(error,resutls){
-      if(error) throw error;
-
-      else{
-        res.send("La calificacion al comprador se realizo correctamente");
-      }
-      
-    });
+    //connection.query(`insert into calificaciones_compradores values(${compraRecibida.comprador_calificado},${compraRecibida.id_usuario},${idCalificante},${Calificacion},${compraRecibida.fecha})`,function(error,resutls){
+    //califica el vendedor al comprador
+    new CalificacionesComprador(null,compraRecibida.id_usuario,idCalificante,Calificacion,new Date()).save();
+    res.send("Insertado con exito la calificacion al comprador");
   }
-  
 })
 
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`)
 })
 
-async function a(){
-  console.log(await Favorito.get());
-}

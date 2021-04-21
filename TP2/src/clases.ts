@@ -133,7 +133,7 @@ export class Compra extends TablaSQL {
       `DELETE FROM compras where id = ${this.id}`
     );
     connection.query(
-      `INSERT INTO compras VALUE(${this.id_usuario}, ${this.id_producto}, ${this.cantidad}, '${fechaMYSQL(this.fecha)}', ${this.comprador_calificado}, ${this.vendedor_calificado})`
+      `INSERT INTO compras VALUE(null,${this.id_usuario}, ${this.id_producto}, ${this.cantidad}, '${fechaMYSQL(this.fecha)}', ${this.comprador_calificado}, ${this.vendedor_calificado})`
     );
   }
 
@@ -256,11 +256,13 @@ export class Producto extends TablaSQL {
   }
 
   public static find(id: number): any {
+    console.log(id);
     return new Promise((resolve, reject) => {
       connection.query(
-        `select * from compras where id=${id}`,
+        `select * from productos where id=${id}`,
         function (error, results) {
           let productoJson = results[0];
+          console.log(productoJson);
           let producto: Producto = new Producto(
             productoJson.id,
             productoJson.vendedor,
@@ -391,10 +393,9 @@ export class CalificacionesVendedor extends TablaSQL {
       connection.query(
         `select * from calificaciones_vendedores ${this.query}`,
         function (error, results) {
-
           let calificaciones_vendedores: Set<CalificacionesVendedor> = new Set<CalificacionesVendedor>();
 
-          results.array.forEach(calificacionVendedorJson => {
+          results.forEach(calificacionVendedorJson => {
             var calificacionVendedor: CalificacionesVendedor = new CalificacionesVendedor(
               calificacionVendedorJson.id,
               calificacionVendedorJson.id_vendedor,
@@ -486,6 +487,7 @@ export class CalificacionesComprador extends TablaSQL {
   }
 
   public static get(): any {
+
     return new Promise((resolve, reject) => {
       connection.query(
         `select * from calificaciones_compradores ${this.query}`,
@@ -493,7 +495,7 @@ export class CalificacionesComprador extends TablaSQL {
 
           let calificaciones_compradores: Set<CalificacionesComprador> = new Set<CalificacionesComprador>();
 
-          results.array.forEach(calificacionCompradorJson => {
+          results.forEach(calificacionCompradorJson => {
             var calificacionComprador: CalificacionesComprador = new CalificacionesComprador(
               calificacionCompradorJson.id,
               calificacionCompradorJson.id_vendedor,

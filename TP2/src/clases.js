@@ -135,7 +135,7 @@ var Compra = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, connection.query("DELETE FROM compras where id = " + this.id)];
                     case 1:
                         _a.sent();
-                        connection.query("INSERT INTO compras VALUE(" + this.id_usuario + ", " + this.id_producto + ", " + this.cantidad + ", '" + fechaMYSQL(this.fecha) + "', " + this.comprador_calificado + ", " + this.vendedor_calificado + ")");
+                        connection.query("INSERT INTO compras VALUE(null," + this.id_usuario + ", " + this.id_producto + ", " + this.cantidad + ", '" + fechaMYSQL(this.fecha) + "', " + this.comprador_calificado + ", " + this.vendedor_calificado + ")");
                         return [2 /*return*/];
                 }
             });
@@ -217,9 +217,11 @@ var Producto = /** @class */ (function (_super) {
         });
     };
     Producto.find = function (id) {
+        console.log(id);
         return new Promise(function (resolve, reject) {
-            connection.query("select * from compras where id=" + id, function (error, results) {
+            connection.query("select * from productos where id=" + id, function (error, results) {
                 var productoJson = results[0];
+                console.log(productoJson);
                 var producto = new Producto(productoJson.id, productoJson.vendedor, productoJson.nombre, productoJson.precio, productoJson.stock, productoJson.usado);
                 resolve(producto);
             });
@@ -306,7 +308,7 @@ var CalificacionesVendedor = /** @class */ (function (_super) {
         return new Promise(function (resolve, reject) {
             connection.query("select * from calificaciones_vendedores " + _this.query, function (error, results) {
                 var calificaciones_vendedores = new Set();
-                results.array.forEach(function (calificacionVendedorJson) {
+                results.forEach(function (calificacionVendedorJson) {
                     var calificacionVendedor = new CalificacionesVendedor(calificacionVendedorJson.id, calificacionVendedorJson.id_vendedor, calificacionVendedorJson.id_comprador, calificacionVendedorJson.calificacion, calificacionVendedorJson.fecha);
                     calificaciones_vendedores.add(calificacionVendedor);
                 });
@@ -364,7 +366,7 @@ var CalificacionesComprador = /** @class */ (function (_super) {
         return new Promise(function (resolve, reject) {
             connection.query("select * from calificaciones_compradores " + _this.query, function (error, results) {
                 var calificaciones_compradores = new Set();
-                results.array.forEach(function (calificacionCompradorJson) {
+                results.forEach(function (calificacionCompradorJson) {
                     var calificacionComprador = new CalificacionesComprador(calificacionCompradorJson.id, calificacionCompradorJson.id_vendedor, calificacionCompradorJson.id_comprador, calificacionCompradorJson.calificacion, calificacionCompradorJson.fecha);
                     calificaciones_compradores.add(calificacionComprador);
                 });
