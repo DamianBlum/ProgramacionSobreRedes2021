@@ -1,0 +1,8 @@
+    node_nuestro:
+        image: node_nuestro
+        container_name: node_nuestro
+        ports: 
+            - 3000:3000
+        # command: while ! nc -z db 3306 ; do echo "Waiting for the MySQL Server" sleep 3 done npm start
+        depends_on: 
+            - mysql
