@@ -13,7 +13,7 @@ connection.connect();
 // CLASE ABSTRACTA DE LA QUE DERIVAN TODAS LAS CLASES
 
 function fechaMYSQL(fecha:Date): string {
-  return `${fecha.getFullYear()}-${fecha.getMonth() + 1}-${fecha.getDate()} ${fecha.getHours()}-${fecha.getMinutes()}-${fecha.getSeconds()}`;
+  return `'${fecha.getFullYear()}-${fecha.getMonth() + 1}-${fecha.getDate()} ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}'`;
 }
 
 export abstract class TablaSQL {

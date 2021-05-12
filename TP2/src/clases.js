@@ -55,7 +55,7 @@ exports.__esModule = true;
 exports.CalificacionesComprador = exports.CalificacionesVendedor = exports.Usuario = exports.Producto = exports.Favorito = exports.Compra = exports.TablaSQL = void 0;
 var mysql = require("mysql");
 var connection = mysql.createConnection({
-    host: "localhost",
+    host: "mysql",
     user: "root",
     password: "password",
     database: "e_commerce",
@@ -64,7 +64,7 @@ var connection = mysql.createConnection({
 connection.connect();
 // CLASE ABSTRACTA DE LA QUE DERIVAN TODAS LAS CLASES
 function fechaMYSQL(fecha) {
-    return fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate() + " " + fecha.getHours() + "-" + fecha.getMinutes() + "-" + fecha.getSeconds();
+    return "'" + fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds() + "'";
 }
 var TablaSQL = /** @class */ (function () {
     function TablaSQL() {
