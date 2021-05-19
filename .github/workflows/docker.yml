@@ -35,3 +35,6 @@ jobs:
       - name: Docker build
         run: |
          docker build ./TP2/src -t "node_nuestro" 
+      - name : Docker push  
+        run : |
+          docker push node_nuestro
