@@ -28,4 +28,4 @@ jobs:
       # Runs a single command using the runners shell
       - name: Docker build
         run: |
-         docker build ./TP2/src -t "node_nuestro"
+         docker build ./TP2/src -t "node_nuestro" .
