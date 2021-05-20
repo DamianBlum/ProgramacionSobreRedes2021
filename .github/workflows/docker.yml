@@ -1,7 +1,10 @@
 name: Docker Build
 on:
-  release:
-    types: [published]
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
 jobs:
   push_to_registry:
     name: Push Docker image to GitHub Packages
@@ -18,3 +21,4 @@ jobs:
           registry: docker.pkg.github.com
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          
