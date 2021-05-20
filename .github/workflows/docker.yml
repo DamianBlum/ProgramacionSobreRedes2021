@@ -1,40 +1,20 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Docker Build
-
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  release:
+    types: [published]
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  push_to_registry:
+    name: Push Docker image to GitHub Packages
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    permissions:
+      packages: write
+      contents: read
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Docker login
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER}}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
-        run: | 
-         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-
-      # Runs a single command using the runners shell
-      - name: Docker build
-        run: |
-         docker build ./TP2/src -t "node_nuestro" 
-      - name : Docker push  
-        run : |
-          docker push node_nuestro
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
