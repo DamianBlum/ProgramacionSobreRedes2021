@@ -58,7 +58,7 @@ var connection = mysql.createConnection({
     host: "190.245.237.78",
     user: "root",
     password: "password",
-    database: "e_commerce",
+    database: "ecommerce",
     port: "3306"
 });
 connection.connect();
