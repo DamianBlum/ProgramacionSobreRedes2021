@@ -55,7 +55,7 @@ exports.__esModule = true;
 exports.CalificacionesComprador = exports.CalificacionesVendedor = exports.Usuario = exports.Producto = exports.Favorito = exports.Compra = exports.TablaSQL = void 0;
 var mysql = require("mysql");
 var connection = mysql.createConnection({
-    host: "mysql",
+    host: "190.245.237.78",
     user: "root",
     password: "password",
     database: "e_commerce",
