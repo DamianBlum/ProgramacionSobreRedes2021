@@ -40,7 +40,7 @@ var clases_1 = require("./clases");
 var express = require('express');
 var mysql = require('mysql');
 var app = express();
-var port = 3000;
+var port = process.env.PORT || 3000;
 var connection = mysql.createConnection({
     host: '190.245.237.78',
     user: 'root',
