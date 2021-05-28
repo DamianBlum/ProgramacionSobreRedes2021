@@ -10,7 +10,7 @@ const pool = mysql.createPool({    //si van a haber procesos paralelos hay q usa
     connectionLimit: 10,   //max de hilos  
     host: "localhost",
     user: "root",
-    password: "alumnoipm",
+    password: "password",
     database: "cine",
 });
 
@@ -30,7 +30,7 @@ const arrayAString = (array: Array<String>): String => {
     for(let i: number = 1; i < array.length; i++){
         nuevoString += `, "${array[i]}"`;
     }
-
+ 
     nuevoString += "]";
     return nuevoString;
 };

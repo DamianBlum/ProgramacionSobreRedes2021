@@ -45,7 +45,7 @@ var pool = mysql.createPool({
     connectionLimit: 10,
     host: "localhost",
     user: "root",
-    password: "alumnoipm",
+    password: "password",
     database: "cine"
 });
 //const verificacionVigente = new CronJob('0 */5 * * * *', function(){
