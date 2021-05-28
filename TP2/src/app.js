@@ -42,10 +42,10 @@ var mysql = require('mysql');
 var app = express();
 var port = process.env.PORT || 3000;
 var connection = mysql.createConnection({
-    host: '190.245.237.78',
-    user: 'root',
-    password: 'password',
-    database: 'ecommerce',
+    host: 'freedb.tech',
+    user: 'freedbtech_MarcoPontoriero',
+    password: 'alumnoipm',
+    database: 'freedbtech_ecommerceIPM',
     port: "3306"
 });
 //JOYA

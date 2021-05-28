@@ -55,10 +55,10 @@ exports.__esModule = true;
 exports.CalificacionesComprador = exports.CalificacionesVendedor = exports.Usuario = exports.Producto = exports.Favorito = exports.Compra = exports.TablaSQL = void 0;
 var mysql = require("mysql");
 var connection = mysql.createConnection({
-    host: "190.245.237.78",
-    user: "root",
-    password: "password",
-    database: "ecommerce",
+    host: "freedb.tech",
+    user: "freedbtech_MarcoPontoriero",
+    password: "alumnoipm",
+    database: "freedbtech_ecommerceIPM",
     port: "3306"
 });
 connection.connect();
