@@ -1,5 +1,3 @@
 build:
   docker:
     web: TP2/src/Dockerfile
-run:
-  web: npm run start
