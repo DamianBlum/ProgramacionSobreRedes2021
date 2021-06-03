@@ -1,10 +1,4 @@
-name: Docker Build
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-  workflow_dispatch:
+
 build:
   docker:
     web: TP2/src/Dockerfile
