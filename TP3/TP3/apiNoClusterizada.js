@@ -48,10 +48,12 @@ var pool = mysql.createPool({
     password: "password",
     database: "cine"
 });
+
 //const verificacionVigente = new CronJob('0 */5 * * * *', function(){
 //      pool.query(`update funciones set vigente=0 where fecha BETWEEN now() and (date_add(now(),interval 5 minute)) && vigente=1`)
 //});
 //verificacionVigente.start();
+
 var stringAArray = function (string) {
     var stringModificado = string.replace(/"/g, "").replace("]", "").replace("[", "").replace(/ /g, "");
     var arrayNuevo = stringModificado.split(",");
@@ -65,6 +67,7 @@ var arrayAString = function (array) {
     nuevoString += "]";
     return nuevoString;
 };
+
 //reservar funciona ya de a un caso, toca probar muc
 var reservar = function (idUsuario, arrayButacas, idFuncion, conn) {
     return new Promise(function (resolve, reject) {

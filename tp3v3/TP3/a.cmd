@@ -1,1 +1,0 @@
-tsc api.ts && node api.js
