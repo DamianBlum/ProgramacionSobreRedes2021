@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,27 +34,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
-var mysql = require('mysql');
-var bodyParser = require('body-parser');
-var CronJob = require('cron').CronJob;
-var http = require("http");
-var cluster = require('cluster');
-var pool = mysql.createPool({
-    connectionLimit: 10,
+var _this = this;
+var mysql = require("mysql");
+var bodyParser = require("body-parser");
+var port = 3305;
+var conn = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "password",
     database: "cine"
 });
-
-//const verificacionVigente = new CronJob('0 */5 * * * *', function(){
-//      pool.query(`update funciones set vigente=0 where fecha BETWEEN now() and (date_add(now(),interval 5 minute)) && vigente=1`)
-//});
-//verificacionVigente.start();
-
+var express = require("express");
+var app = express();
+//Dos Funciones para trabajar tranquilos con las butacas, nada relevante
 var stringAArray = function (string) {
-    var stringModificado = string.replace(/"/g, "").replace("]", "").replace("[", "").replace(/ /g, "");
+    var stringModificado = string
+        .replace(/"/g, "")
+        .replace("]", "")
+        .replace("[", "")
+        .replace(/ /g, "");
     var arrayNuevo = stringModificado.split(",");
     return arrayNuevo;
 };
@@ -67,29 +64,37 @@ var arrayAString = function (array) {
     nuevoString += "]";
     return nuevoString;
 };
-
-//reservar funciona ya de a un caso, toca probar muc
-var reservar = function (idUsuario, arrayButacas, idFuncion, conn) {
-    return new Promise(function (resolve, reject) {
-        conn.query("select vigente from funciones where id=" + idFuncion + " FOR UPDATE", function (error, results) {
+//Para los body incluimos
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.get("/funciones", function (req, res) {
+    conn.query("select * from funciones where vigente = 1", function (error, results) {
+        if (error)
+            throw error;
+        res.send(results);
+    });
+});
+app.post("/:id_funcion/reservar", function (req, res) {
+    var body = req.body;
+    var idUsuario = body.user_id;
+    var idFuncion = req.params.id_funcion;
+    var arrayButacas = stringAArray(body.butacas);
+    if (arrayButacas.length >= 6) {
+    }
+    else {
+        conn.query("select vigente from funciones where id=" + idFuncion, function (error, results) {
             if (error) {
-                return conn.rollback(function () {
-                    throw error;
-                });
+                throw error;
             }
             if (results[0].vigente == 1) {
                 conn.query("select count(id) as reservo from reservas where usuario=" + idUsuario + " and funcion=" + idFuncion, function (error, results) {
                     if (error) {
-                        return conn.rollback(function () {
-                            throw error;
-                        });
+                        throw error;
                     }
                     if (results[0].reservo == 0) {
-                        conn.query("select butacas_disponibles from funciones where id=1", function (error, results) {
+                        conn.query("select butacas_disponibles from funciones where id=" + idFuncion, function (error, results) {
                             if (error) {
-                                return conn.rollback(function () {
-                                    throw error;
-                                });
+                                throw error;
                             }
                             var arrayButacasDisponibles = stringAArray(results[0].butacas_disponibles);
                             var butacasDisponiblesParaReservar = true;
@@ -99,13 +104,11 @@ var reservar = function (idUsuario, arrayButacas, idFuncion, conn) {
                                 }
                             });
                             if (butacasDisponiblesParaReservar) {
-                                conn.query("insert into reservas value (null, " + idUsuario + ", " + idFuncion + ", '" + arrayAString(arrayButacas) + "')", function (error) { return __awaiter(void 0, void 0, void 0, function () {
+                                conn.query("insert into reservas value (null, " + idUsuario + ", " + idFuncion + ", '" + arrayAString(arrayButacas) + "')", function (error) { return __awaiter(_this, void 0, void 0, function () {
                                     var butacasActualizadas_1;
                                     return __generator(this, function (_a) {
                                         if (error) {
-                                            return [2 /*return*/, conn.rollback(function () {
-                                                    throw error;
-                                                })];
+                                            throw error;
                                         }
                                         else {
                                             butacasActualizadas_1 = arrayButacasDisponibles;
@@ -115,178 +118,99 @@ var reservar = function (idUsuario, arrayButacas, idFuncion, conn) {
                                             if (butacasActualizadas_1.length > 0) {
                                                 conn.query("update funciones set butacas_disponibles = '" + arrayAString(butacasActualizadas_1) + "' where id = " + idFuncion, function (error) {
                                                     if (error) {
-                                                        return conn.rollback(function () {
-                                                            throw error;
-                                                        });
+                                                        throw error;
                                                     }
                                                 });
                                             }
                                             else {
                                                 conn.query("update funciones set butacas_disponibles = '[]', vigente = 0", function (error) {
                                                     if (error) {
-                                                        return conn.rollback(function () {
-                                                            throw error;
-                                                        });
+                                                        throw error;
                                                     }
                                                 });
                                             }
-                                            console.log(1);
-                                            resolve("La/s butaca/s se reservaron con exito");
+                                            res.send("La/s butaca/s se reservaron con exito");
                                         }
                                         return [2 /*return*/];
                                     });
                                 }); });
                             }
                             else {
-                                console.log(2);
-                                resolve("La/s butaca/s no estan disponibles para reservar");
+                                res.send("La/s butaca/s no estan disponibles para reservar");
                             }
                         });
                     }
                     else {
-                        console.log(3);
-                        resolve("Ya existe una reserva");
+                        res.send("Ya existe una reserva");
                     }
                 });
             }
             else {
-                console.log(4);
-                resolve("No esta disponible");
+                res.send("No esta disponible");
             }
         });
-    });
-};
-if (cluster.isWorker) {
-    process.on('message', function (bodyReserva) {
-        pool.getConnection(function (error, conn) {
-            if (error) {
+    }
+});
+app.post("/:id_funcion/cancelar_reserva", function (req, res) {
+    var id_funcion = req.params.id_funcion;
+    var user_id = req.body.user_id;
+    conn.query("select id from reservas where usuario = " + user_id + " && funcion = " + id_funcion, function (error, results) { return __awaiter(_this, void 0, void 0, function () {
+        var id_reserva_1;
+        var _this = this;
+        return __generator(this, function (_a) {
+            if (error)
                 throw error;
-            }
-            conn.beginTransaction(function (error) { return __awaiter(void 0, void 0, void 0, function () {
-                var idUsuario, arrayButacas, idFuncion, resultado;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            if (error) {
+            else if (results.length > 0) {
+                id_reserva_1 = results[0].id;
+                conn.query("select butacas_reservadas from reservas inner join funciones on reservas.funcion=funciones.id where reservas.id=" + id_reserva_1 + " && (date_add(now(),interval 1 hour))<funciones.fecha", function (error2, results) { return __awaiter(_this, void 0, void 0, function () {
+                    var _this = this;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (!error2) return [3 /*break*/, 1];
                                 throw error;
-                            }
-                            idUsuario = bodyReserva.user_id;
-                            arrayButacas = stringAArray(bodyReserva.butacas);
-                            idFuncion = bodyReserva.id_funcion;
-                            if (arrayButacas.length >= 6) {
-                                process.send("No se pueden reservar mas de 5 butacas a la vez");
-                                process.kill(process.pid);
-                            }
-                            return [4 /*yield*/, reservar(idUsuario, arrayButacas, idFuncion, conn)];
-                        case 1:
-                            resultado = _a.sent();
-                            conn.commit(function (error) {
-                                if (error) {
-                                    return conn.rollback(function () {
-                                        throw error;
-                                    });
-                                }
-                                conn.release();
-                                process.send(resultado);
-                                process.kill(process.pid);
-                            });
-                            return [2 /*return*/];
-                    }
-                });
-            }); });
+                            case 1:
+                                if (!(results.length > 0)) return [3 /*break*/, 3];
+                                return [4 /*yield*/, conn.query("SELECT butacas_disponibles FROM funciones inner join reservas on funciones.id=reservas.funcion WHERE reservas.id=" + id_reserva_1, function (error3, results2) { return __awaiter(_this, void 0, void 0, function () {
+                                        var butacasReservadas, butacasDisponibles, butacasDisaponiblesString;
+                                        return __generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0:
+                                                    if (!error3) return [3 /*break*/, 1];
+                                                    throw error;
+                                                case 1:
+                                                    butacasReservadas = stringAArray(results[0].butacas_reservadas);
+                                                    butacasDisponibles = stringAArray(results2[0].butacas_disponibles);
+                                                    butacasDisponibles =
+                                                        butacasDisponibles.concat(butacasReservadas);
+                                                    butacasDisaponiblesString = arrayAString(butacasDisponibles);
+                                                    return [4 /*yield*/, conn.query("update funciones join reservas on funciones.id=reservas.funcion set butacas_disponibles='" + butacasDisaponiblesString + "' where reservas.id=" + id_reserva_1)];
+                                                case 2:
+                                                    _a.sent();
+                                                    return [4 /*yield*/, conn.query("delete from reservas where id=" + id_reserva_1)];
+                                                case 3:
+                                                    _a.sent();
+                                                    _a.label = 4;
+                                                case 4: return [2 /*return*/];
+                                            }
+                                        });
+                                    }); })];
+                            case 2:
+                                _a.sent();
+                                res.send("Eliminado correctamente");
+                                return [3 /*break*/, 4];
+                            case 3:
+                                res.send("El lapso para cancelar la reserva termino o la reserva no exite.");
+                                _a.label = 4;
+                            case 4: return [2 /*return*/];
+                        }
+                    });
+                }); });
+            }
+            return [2 /*return*/];
         });
-    });
-}
-else {
-    var port_1 = 3305;
-    var cluster_1 = require('cluster');
-    var bodyParser_1 = require('body-parser');
-    var express = require('express');
-    var app = express();
-    var server = http.createServer(app);
-    app.use(express.json());
-    app.use(bodyParser_1.urlencoded({ extended: true }));
-    app.get('/funciones', function (req, res) {
-        pool.query("select * from funciones where vigente = 1", function (error, results) { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                if (error)
-                    throw error;
-                res.send(results);
-                return [2 /*return*/];
-            });
-        }); });
-    });
-    app.post('/:id_funcion/reservar', function (req, res) {
-        var worker = cluster_1.fork();
-        var body = req.body;
-        body.id_funcion = req.params.id_funcion;
-        worker.send(body);
-        worker.on('message', function (result) {
-            res.status(200).send(result);
-        });
-    });
-    app.listen(port_1, function () {
-        console.log("App listening at http://localhost:" + port_1);
-    });
-    app.post('/:id_funcion/cancelar_reserva', function (req, res) {
-        var id_funcion = req.params.id_funcion;
-        var user_id = req.body.user_id;
-        pool.query("select id from reservas where usuario = " + user_id + " && funcion = " + id_funcion, function (error, results) { return __awaiter(void 0, void 0, void 0, function () {
-            var id_reserva_1;
-            return __generator(this, function (_a) {
-                if (error)
-                    throw error;
-                else if (results.length > 0) {
-                    id_reserva_1 = results[0].id;
-                    pool.query("select butacas_reservadas from reservas inner join funciones on reservas.funcion=funciones.id where reservas.id=" + id_reserva_1 + " && (date_add(now(),interval 1 hour))<funciones.fecha", function (error2, results) { return __awaiter(void 0, void 0, void 0, function () {
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    if (!error2) return [3 /*break*/, 1];
-                                    throw error;
-                                case 1:
-                                    if (!(results.length > 0)) return [3 /*break*/, 3];
-                                    return [4 /*yield*/, pool.query("SELECT butacas_disponibles FROM funciones inner join reservas on funciones.id=reservas.funcion WHERE reservas.id=" + id_reserva_1, function (error3, results2) { return __awaiter(void 0, void 0, void 0, function () {
-                                            var butacasReservadas, butacasDisponibles, butacasDisaponiblesString;
-                                            return __generator(this, function (_a) {
-                                                switch (_a.label) {
-                                                    case 0:
-                                                        if (!error3) return [3 /*break*/, 1];
-                                                        throw error;
-                                                    case 1:
-                                                        console.log("MEGA UWU");
-                                                        butacasReservadas = stringAArray(results[0].butacas_reservadas);
-                                                        butacasDisponibles = stringAArray(results2[0].butacas_disponibles);
-                                                        console.log(butacasReservadas);
-                                                        console.log(butacasDisponibles);
-                                                        butacasDisponibles = butacasDisponibles.concat(butacasReservadas);
-                                                        butacasDisaponiblesString = arrayAString(butacasDisponibles);
-                                                        console.log(butacasDisaponiblesString);
-                                                        return [4 /*yield*/, pool.query("update funciones join reservas on funciones.id=reservas.funcion set butacas_disponibles='" + butacasDisaponiblesString + "' where reservas.id=" + id_reserva_1)];
-                                                    case 2:
-                                                        _a.sent();
-                                                        return [4 /*yield*/, pool.query("delete from reservas where id=" + id_reserva_1)];
-                                                    case 3:
-                                                        _a.sent();
-                                                        _a.label = 4;
-                                                    case 4: return [2 /*return*/];
-                                                }
-                                            });
-                                        }); })];
-                                case 2:
-                                    _a.sent();
-                                    res.send("Eliminado correctamente");
-                                    return [3 /*break*/, 4];
-                                case 3:
-                                    res.send("El lapso para cancelar la reserva termino o la reserva no exite.");
-                                    _a.label = 4;
-                                case 4: return [2 /*return*/];
-                            }
-                        });
-                    }); });
-                }
-                return [2 /*return*/];
-            });
-        }); });
-    });
-}
+    }); });
+});
+app.listen(port, function () {
+    console.log("App listening at http://localhost:" + port);
+});

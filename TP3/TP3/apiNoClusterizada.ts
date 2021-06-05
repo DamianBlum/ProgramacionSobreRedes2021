@@ -47,8 +47,8 @@ app.get("/funciones", (req, res) => {
 app.post("/:id_funcion/reservar", (req, res) => {
   let body = req.body;
   let idUsuario: number = body.user_id;
-  let arrayButacas: Array<String> = stringAArray(body.butacas);
   let idFuncion: number = req.params.id_funcion;
+  let arrayButacas: Array<String> = stringAArray(body.butacas);
   if (arrayButacas.length >= 6) {
   } else {
     conn.query(
@@ -68,7 +68,7 @@ app.post("/:id_funcion/reservar", (req, res) => {
 
               if (results[0].reservo == 0) {
                 conn.query(
-                  `select butacas_disponibles from funciones where id=1`,
+                  `select butacas_disponibles from funciones where id=${idFuncion}`,
                   (error, results) => {
                     if (error) {
                       throw error;
@@ -86,9 +86,7 @@ app.post("/:id_funcion/reservar", (req, res) => {
 
                     if (butacasDisponiblesParaReservar) {
                       conn.query(
-                        `insert into reservas value (null, ${idUsuario}, ${idFuncion}, '${arrayAString(
-                          arrayButacas
-                        )}')`,
+                        `insert into reservas value (null, ${idUsuario}, ${idFuncion}, '${arrayAString(arrayButacas)}')`,
                         async (error) => {
                           if (error) {
                             throw error;

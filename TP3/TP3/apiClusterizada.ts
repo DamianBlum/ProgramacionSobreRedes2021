@@ -60,7 +60,7 @@ const reservar = (
 
               if (results[0].reservo == 0) {
                 conn.query(
-                  `select butacas_disponibles from funciones where id=1`,
+                  `select butacas_disponibles from funciones where id=${idFuncion}`,
                   (error, results) => {
                     if (error) {
                       return conn.rollback(function () {
@@ -71,6 +71,7 @@ const reservar = (
                     let arrayButacasDisponibles: Array<String> = stringAArray(
                       results[0].butacas_disponibles
                     );
+
                     let butacasDisponiblesParaReservar: boolean = true;
 
                     arrayButacas.forEach((butaca) => {
@@ -102,9 +103,7 @@ const reservar = (
 
                             if (butacasActualizadas.length > 0) {
                               conn.query(
-                                `update funciones set butacas_disponibles = '${arrayAString(
-                                  butacasActualizadas
-                                )}' where id = ${idFuncion}`,
+                                `update funciones set butacas_disponibles = '${arrayAString(butacasActualizadas)}' where id = ${idFuncion}`,
                                 (error) => {
                                   if (error) {
                                     return conn.rollback(function () {
@@ -193,7 +192,7 @@ if (cluster.isWorker) {
     });
   });
 } else {
-  const port: number = 3305;
+  const port: number = 3304;
   const cluster = require("cluster");
   const bodyParser = require("body-parser");
 
@@ -218,6 +217,8 @@ if (cluster.isWorker) {
     const worker = cluster.fork();
 
     let body = req.body;
+    body.id_funcion = req.params.id_funcion;
+    
 
     worker.send(body);
     worker.on("message", (result) => {
