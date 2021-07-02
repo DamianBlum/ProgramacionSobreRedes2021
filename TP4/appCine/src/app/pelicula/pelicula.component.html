@@ -1,11 +1,13 @@
-<div class='carousel-item'>
+<div class="card" style="width: 40rem">
   <img
     src="https://i.ytimg.com/vi/H5g60RoJzr0/maxresdefault.jpg"
-    class="d-block w-100"
+    class="card-img-top"
   />
-  <div class="carousel-caption d-none d-md-block">
-    <h5>{{ titulo }}</h5>
-    <p>{{ duracion }}</p>
-    <a href="#" class="btn btn-primary">RESERVAR</a>
+  <div class="card-body">
+    <h5 class="card-title">{{ titulo }}</h5>
+    <p class="card-text">Fecha: {{ fecha }}</p>
+    <p class="card-text">Hora: {{ hora }}</p>
+    <button (click)="clickPelicula()" class="btn btn-primary reservar">RESERVAR</button>
+    <br><br><br>
   </div>
 </div>

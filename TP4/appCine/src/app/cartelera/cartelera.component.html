@@ -1,16 +1,49 @@
-<div
-  id="carouselExampleSlidesOnly"
-  class="carousel slide"
-  data-bs-ride="carousel"
->
-  <div class="carousel-inner">
-    <app-pelicula
-      *ngFor="let pelicula of peliculas"
-      let
-      titulo="{{ pelicula.get('titulo') }}"
-      duracion="{{ pelicula.get('duracion') }}"
-    >
-    </app-pelicula>
+<div class="container mx-auto">
+  <div class="col-md-max mx-auto mt-5 mb-5 text-center">
+    <div class="bg-dark card-body" style="display: inline-flex">
+      <div
+        id="carouselExampleDark"
+        class="carousel carousel-dark slide"
+        data-bs-ride="carousel"
+      >
+        <!-- indicadores -->
+        <div class="carousel-indicators">
+        </div>
+
+        <!-- contenido -->
+        <div class="carousel-inner">
+          <app-pelicula
+            *ngFor="let pelicula of peliculas"
+            let
+            titulo="{{ pelicula.get('titulo') }}"
+            fecha="{{ pelicula.get('fecha') }}"
+            hora="{{ pelicula.get('hora') }}"
+            class="carousel-item"
+            data-bs-interval="10000"
+          >
+          </app-pelicula>
+        </div>
+        
+        <!-- botones -->
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExampleDark"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExampleDark"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
-<!--Conseguir data funciones y darsela, sip, y se los doy aca en el ngFor, como que no compila?, obvio esto de aca arriba no funciona, falta cambiar cosas xd -->
