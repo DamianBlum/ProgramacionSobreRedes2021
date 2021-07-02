@@ -97,7 +97,6 @@ const reservar = (
                             arrayButacas.forEach((butaca) => {
                               butacasActualizadas.splice(
                                 butacasActualizadas.indexOf(butaca),
-                                1
                               );
                             });
 
@@ -184,6 +183,7 @@ if (cluster.isWorker) {
               throw error;
             });
           }
+          //Fin de la conexion
           conn.release();
           process.send(resultado);
           process.kill(process.pid);

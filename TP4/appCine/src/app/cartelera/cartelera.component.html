@@ -1,4 +1,16 @@
-<div>   
-    <app-pelicula *ngFor="let pelicula of peliculas; let i = index" titulo={{}} duracion={{}} ></app-pelicula>
-</div> 
+<div
+  id="carouselExampleSlidesOnly"
+  class="carousel slide"
+  data-bs-ride="carousel"
+>
+  <div class="carousel-inner">
+    <app-pelicula
+      *ngFor="let pelicula of peliculas"
+      let
+      titulo="{{ pelicula.get('titulo') }}"
+      duracion="{{ pelicula.get('duracion') }}"
+    >
+    </app-pelicula>
+  </div>
+</div>
 <!--Conseguir data funciones y darsela, sip, y se los doy aca en el ngFor, como que no compila?, obvio esto de aca arriba no funciona, falta cambiar cosas xd -->

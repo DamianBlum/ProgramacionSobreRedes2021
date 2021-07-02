@@ -2,7 +2,7 @@ const axios = require("axios").default;
 
 console.log("TEST");
 console.log("");
-console.log("Funciones: 6 users *4 = 144 peticiones");
+console.log("Funciones: 6 users *4 = 24 peticiones");
 
 let promesas = [];
 let start = Date.now();
