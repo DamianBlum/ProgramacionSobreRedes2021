@@ -10,9 +10,11 @@
     width: 280px;
 }
 .contienePeli:hover .overlay{
-    height: 50%;
+    height: 30%;
 }
-
+.contienePeli:hover .tituloPeli{
+    top: 21%;
+}
 .tituloPeli{
     white-space: nowrap; 
     color: white;
@@ -41,4 +43,28 @@
     height: 0;
     transition: .5s ease;
     padding: 20px;
+}
+.contienePeli:hover .fechaPeli{
+    white-space: nowrap; 
+    color: white;
+    font-size: 20px;
+    position: absolute;
+    overflow: hidden;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    margin-top: 0px;
+}
+.contienePeli:hover .salaPeli{
+    white-space: nowrap; 
+    color: white;
+    font-size: 20px;
+    position: absolute;
+    overflow: hidden;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    margin-top: 0px;
 }
