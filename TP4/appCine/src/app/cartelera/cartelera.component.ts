@@ -10,18 +10,17 @@ import { Observable, of } from "rxjs";
 })
 export class CarteleraComponent implements OnInit {
 
-
-  
   constructor(private conf:ConfigService) {
 
   }
-public peliculas: Array<Map<String, String>> = [];
-public cartelera:Array<any>= [];
+
+  public peliculas: Array<Map<String, String>> = [];
+  public cartelera:Array<any>= [];
 
   ngOnInit(): void {
     
     this.conf.getCartelera().subscribe( (data) => {
-      this.cartelera=data;
+      this.cartelera= data;
       this.peliculas= new Array();
       
       this.cartelera.forEach(peliculaDatos => {
@@ -35,25 +34,32 @@ public cartelera:Array<any>= [];
         this.peliculas.push(pelicula);
       });
   
-    })
-
-  } 
+    });
+    for (let i=0; i < this.peliculas.length; i++){
+      if (i == 0){
+        document.getElementsByClassName("carousel-indicators")[0].innerHTML += 
+        `<button
+        type="button"
+        data-bs-target="#carouselExampleDark"
+        data-bs-slide-to="${i}"
+        aria-current="true"
+        aria-label="Slide ${i+1}"
+        class= "indicador active"
+        ></button>`;
+      } else {
+        document.getElementsByClassName("carousel-indicators")[0].innerHTML += 
+        `<button
+        type="button"
+        data-bs-target="#carouselExampleDark"
+        data-bs-slide-to="${i}"
+        aria-current="true"
+        aria-label="Slide ${i+1}"
+        class= "indicador"
+        ></button>`;
+      }
+    }
+  };
   
-}
-
-window.onload = function() {
-  /*for (let i=0; i < document.getElementsByClassName("carousel-item").length; i++){
-    document.getElementsByClassName("carousel-indicators")[0].innerHTML += 
-    `<button
-    type="button"
-    data-bs-target="#carouselExampleDark"
-    data-bs-slide-to="${i}"
-    aria-current="true"
-    aria-label="Slide ${i+1}"
-    class= "indicador"
-    ></button>`;
-  } */
+ 
   
-  //document.getElementsByClassName("carousel-item")[0].className += " active";
-  //document.getElementsByClassName("indicador")[0].className += " active";
 }
