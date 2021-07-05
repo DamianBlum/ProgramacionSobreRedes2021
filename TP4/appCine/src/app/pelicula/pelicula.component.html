@@ -1,14 +1,14 @@
-<div class="card" style="width: 40rem">
+<div class="card d-inline-block mx-3 my-3" style="width: 25rem">
   <img
     src="{{ foto }}"
-    class="card-img-top"
+    class="card-img-top my-2"
+    style="height: 35rem; width: 25rem; object-fit:contain;"
   />
   <div class="card-body">
-    <h5 class="card-title">{{ titulo }}</h5>
+    <h3 class="card-title">{{ titulo }}</h3>
     <p class="card-text">Fecha: {{ fecha }}</p>
     <p class="card-text">Hora: {{ hora }}</p>
     <p class="card-text">Sala: {{ sala }}</p>
     <button [routerLink]="[ '/reserva',id]" class="btn btn-primary reservar">RESERVAR</button>
-    <br><br><br>
   </div>
 </div>
