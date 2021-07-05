@@ -13,11 +13,13 @@
         <!-- contenido -->
         <div class="carousel-inner">
           <app-pelicula
-            *ngFor="let pelicula of peliculas"
-            let
+            *ngFor="let pelicula of peliculas"  
+            id="{{ pelicula.get('id') }}"
             titulo="{{ pelicula.get('titulo') }}"
             fecha="{{ pelicula.get('fecha') }}"
             hora="{{ pelicula.get('hora') }}"
+            sala="{{ pelicula.get('sala') }}"
+            foto="{{ pelicula.get('foto') }}"
             class="carousel-item"
             data-bs-interval="10000"
           >

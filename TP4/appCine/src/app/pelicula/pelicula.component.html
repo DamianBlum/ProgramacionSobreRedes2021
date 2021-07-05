@@ -1,13 +1,14 @@
 <div class="card" style="width: 40rem">
   <img
-    src="https://i.ytimg.com/vi/H5g60RoJzr0/maxresdefault.jpg"
+    src="{{ foto }}"
     class="card-img-top"
   />
   <div class="card-body">
     <h5 class="card-title">{{ titulo }}</h5>
     <p class="card-text">Fecha: {{ fecha }}</p>
     <p class="card-text">Hora: {{ hora }}</p>
-    <button (click)="clickPelicula()" class="btn btn-primary reservar">RESERVAR</button>
+    <p class="card-text">Sala: {{ sala }}</p>
+    <button [routerLink]="[ '/reserva',id]" class="btn btn-primary reservar">RESERVAR</button>
     <br><br><br>
   </div>
 </div>

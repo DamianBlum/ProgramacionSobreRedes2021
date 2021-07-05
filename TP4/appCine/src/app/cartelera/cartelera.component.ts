@@ -1,47 +1,48 @@
 import { Component, OnInit } from '@angular/core'; 
-import {Observable} from "rxjs/Observable";
-import {HttpClient} from "@angular/common/http";
+import { ConfigService } from 'config/config.service';
+import { Observable, of } from "rxjs";
 
 @Component({
   selector: 'app-cartelera',
   templateUrl: './cartelera.component.html',
-  styleUrls: ['./cartelera.component.scss']
+  styleUrls: ['./cartelera.component.scss'],
+  providers: [ConfigService]
 })
 export class CarteleraComponent implements OnInit {
-  public peliculas: Array<Map<String, String>> = [];
-  
-  constructor() {
 
-   }
+
+  
+  constructor(private conf:ConfigService) {
+
+  }
+public peliculas: Array<Map<String, String>> = [];
+public cartelera:Array<any>= [];
 
   ngOnInit(): void {
-    //aca consigo la data de la base
+    
+    this.conf.getCartelera().subscribe( (data) => {
+      this.cartelera=data;
+      this.peliculas= new Array();
+      
+      this.cartelera.forEach(peliculaDatos => {
+        let pelicula: Map<String, String> = new Map();
+        pelicula.set("id", peliculaDatos["id"]);
+        pelicula.set("titulo", peliculaDatos["titulo"]);
+        pelicula.set("fecha", peliculaDatos["fecha"].split("T")[0]);
+        pelicula.set("hora", peliculaDatos["fecha"].split("T")[1].split(".")[0]);
+        pelicula.set("sala", peliculaDatos["sala"]);
+        pelicula.set("foto", peliculaDatos["foto"]);
+        this.peliculas.push(pelicula);
+      });
+  
+    })
 
-    this.peliculas= new Array();
-    
-    let pelicula: Map<String, String> = new Map();
-    pelicula.set("titulo", "El secreto de sus ojos");
-    pelicula.set("fecha",'2020-04-13');
-    pelicula.set("hora",'22:30:00');
-    
-    let pelicula2: Map<String,String> = new Map();
-    pelicula2.set("titulo", "Sexo sentido");
-    pelicula2.set("fecha",'2020-04-13');
-    pelicula2.set("hora",'22:30:00');
-    
-    this.peliculas.push(pelicula);
-    this.peliculas.push(pelicula2);
-    this.peliculas.push(pelicula2);
-    this.peliculas.push(pelicula2);
-    this.peliculas.push(pelicula2);
-    this.peliculas.push(pelicula2);
-    this.peliculas.push(pelicula2);
   } 
   
 }
 
 window.onload = function() {
-  for (let i=0; i < document.getElementsByClassName("carousel-item").length; i++){
+  /*for (let i=0; i < document.getElementsByClassName("carousel-item").length; i++){
     document.getElementsByClassName("carousel-indicators")[0].innerHTML += 
     `<button
     type="button"
@@ -51,8 +52,8 @@ window.onload = function() {
     aria-label="Slide ${i+1}"
     class= "indicador"
     ></button>`;
-  } 
+  } */
   
-  document.getElementsByClassName("carousel-item")[0].className += " active";
-  document.getElementsByClassName("indicador")[0].className += " active";
+  //document.getElementsByClassName("carousel-item")[0].className += " active";
+  //document.getElementsByClassName("indicador")[0].className += " active";
 }

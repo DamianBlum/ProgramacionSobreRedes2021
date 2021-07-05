@@ -6,13 +6,16 @@ import { Router } from '@angular/router';
   styleUrls: ['./pelicula.component.scss']
 })
 export class PeliculaComponent {
+  @Input() id:string = ''; 
   @Input() titulo:string = '';
   @Input() fecha:string = ''; 
   @Input() hora:string = ''; 
+  @Input() sala:string = ''; 
+  @Input() foto:string = ''; 
   
   constructor(private router:Router) {}
 
-  clickPelicula(): void{
+  /*clickPelicula(): void{
     this.router.navigate(['prueba']);
-  }
+  } guardar por si acaso*/
 }

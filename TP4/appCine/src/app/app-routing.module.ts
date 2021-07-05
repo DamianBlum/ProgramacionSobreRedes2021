@@ -7,7 +7,7 @@ import { PaginaReservaComponent } from './pagina-reserva/pagina-reserva.componen
 const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'home', component: CarteleraComponent},
-  {path: 'prueba',component: PaginaReservaComponent}
+  {path: 'reserva/:id',component: PaginaReservaComponent}
 ];
 // 
 @NgModule({

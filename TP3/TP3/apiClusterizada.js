@@ -105,7 +105,7 @@ var reservar = function (idUsuario, arrayButacas, idFuncion, conn) {
                                         else {
                                             butacasActualizadas_1 = arrayButacasDisponibles;
                                             arrayButacas.forEach(function (butaca) {
-                                                butacasActualizadas_1.splice(butacasActualizadas_1.indexOf(butaca), 1);
+                                                butacasActualizadas_1.splice(butacasActualizadas_1.indexOf(butaca));
                                             });
                                             if (butacasActualizadas_1.length > 0) {
                                                 conn.query("update funciones set butacas_disponibles = '" + arrayAString(butacasActualizadas_1) + "' where id = " + idFuncion, function (error) {
@@ -179,6 +179,7 @@ if (cluster.isWorker) {
                                         throw error;
                                     });
                                 }
+                                //Fin de la conexion
                                 conn.release();
                                 process.send(resultado);
                                 process.kill(process.pid);
@@ -201,6 +202,16 @@ else {
     app.use(bodyParser.urlencoded({ extended: true }));
     app.get("/funciones", function (req, res) {
         pool.query("select * from funciones where vigente = 1", function (error, results) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (error)
+                    throw error;
+                res.send(results);
+                return [2 /*return*/];
+            });
+        }); });
+    });
+    app.get("/sala/:id_sala", function (req, res) {
+        pool.query("select butacas from sala where id =" + req.paramas.id_sala, function (error, results) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 if (error)
                     throw error;
