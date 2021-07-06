@@ -3,10 +3,11 @@
      id="{{fila.key}}"
      >
          <app-butaca
-         *ngFor="let butaca of fila.value"
-         let butaca="{{fila.key+butaca}}"
+         *ngFor="let butaca of fila.value | keyvalue"
+         let butaca="{{butaca.value}}"
+         let estado="{{fila.key}}{{butaca.key}}"
          >
-        
+         
          </app-butaca>
      </div>
  </div>

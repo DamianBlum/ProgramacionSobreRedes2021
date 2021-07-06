@@ -15,29 +15,47 @@ export class PaginaReservaComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private conf:ConfigService,) { }
 
-  public mapita : Map<String, any> = new Map();
+  public mapita : Map<String,Map<String,String>> = new Map();
   public pelicula : funcion | undefined; 
 
-  StringAMapButacas(butacas:String): void{
+  ConseguirButacasDisponiblesYNo(butacas:String,butacas_disponibles:String): void{
     butacas = butacas
     .replace(/"/g, "")
     .replace("]", "")
     .replace("[", "")
     .replace(/ /g, "");
 
+    butacas_disponibles=butacas_disponibles    
+    .replace(/"/g, "")
+    .replace("]", "")
+    .replace("[", "")
+    .replace(/ /g, "");
+
+    let array_butacas_disponibles=butacas_disponibles.split(",");
+
 //idea aca poner lo de estados donde ahora hay un array, osea convertir el array en 
 
     console.log(butacas.split(","));
 
     butacas.split(",").forEach(element => {
-      console.log(element);
       if (this.mapita.has(element[0])){
-        this.mapita.get(element[0]).push(Number(element[1]));
+
+        if (array_butacas_disponibles.includes(element)) {
+          this.mapita.get(element[0])?.set(element[1],"disponible");
+        } else{
+          this.mapita.get(element[0])?.set(element[1],"reservado");
+        }
       } else {
-        this.mapita.set(element[0],[Number(element[1])]);
+        let mapAux: Map<String,String>= new Map();
+        if (array_butacas_disponibles.includes(element)) {
+          this.mapita.set(element[0],mapAux.set(element[1],"disponible"));  
+        } else{
+          this.mapita.set(element[0],mapAux.set(element[1],"reservado"));
+        }
+        
       }
     });
-
+        //
 
   }
 
@@ -47,7 +65,7 @@ export class PaginaReservaComponent implements OnInit {
     this.conf.getCartelera().subscribe((dataPeli)=>{
       dataPeli.forEach(peli => {
         if(peli.id == this.route.snapshot.paramMap.get("id")){
-          this.StringAMapButacas(peli.butacas.toString());
+          this.ConseguirButacasDisponiblesYNo(peli.butacas.toString(),peli.butacas_disponibles.toString());
           console.log(this.mapita);
 
         }
