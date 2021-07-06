@@ -215,7 +215,7 @@ if (cluster.isWorker) {
 
   app.get("/sala/:id_sala", (req, res) =>{
     pool.query(
-      `select butacas from sala where id =`+req.paramas.id_sala,
+      `select butacas from salas where id =`+req.params.id_sala,
       async (error, results) => {
         if (error) throw error;
         res.send(results);

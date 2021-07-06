@@ -1,3 +1,11 @@
-<div>
-    <app-butaca></app-butaca>
-</div>
+ <div class="container" style="text-align: center;">
+     <div *ngFor="let fila of mapita | keyvalue"
+     id="{{fila.key}}"
+     >
+         <app-butaca
+         *ngFor="let butacas of fila.value"
+         >
+
+         </app-butaca>
+     </div>
+ </div>

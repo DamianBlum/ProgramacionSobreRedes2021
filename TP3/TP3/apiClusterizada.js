@@ -211,7 +211,7 @@ else {
         }); });
     });
     app.get("/sala/:id_sala", function (req, res) {
-        pool.query("select butacas from sala where id =" + req.paramas.id_sala, function (error, results) { return __awaiter(_this, void 0, void 0, function () {
+        pool.query("select butacas from salas where id =" + req.params.id_sala, function (error, results) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 if (error)
                     throw error;
