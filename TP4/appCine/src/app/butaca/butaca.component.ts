@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { PaginaReservaComponent } from '../pagina-reserva/pagina-reserva.component';
 
 @Component({
   selector: 'app-butaca',
@@ -7,10 +9,15 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ButacaComponent implements OnInit {
   @Input() butaca:string = ''; 
+  @Input() estado:string = ''; 
 
   constructor() { }
 
   ngOnInit(): void {
+    
   }
 
+  reservarButaca(){
+    /*document.getElementById(this.butaca)?.style.backgroundColor="green";*/
+  }
 }

@@ -205,7 +205,7 @@ if (cluster.isWorker) {
 
   app.get("/funciones", (req, res) => {
     pool.query(
-      `select * from funciones where vigente = 1`,
+      `select funciones.id, titulo, fecha,sala,butacas_disponibles,vigente,foto,butacas  from funciones join salas on salas.id=funciones.sala where vigente = 1 `,
       async (error, results) => {
         if (error) throw error;
         res.send(results);
@@ -213,15 +213,16 @@ if (cluster.isWorker) {
     );
   });
 
-  app.get("/sala/:id_sala", (req, res) =>{
+  /*app.get("/sala/:id_sala", (req, res) =>{
     pool.query(
       `select butacas from salas where id =`+req.params.id_sala,
       async (error, results) => {
+        console.log(results);
         if (error) throw error;
         res.send(results);
       }
     );
-  })
+  })*/
 
   app.post("/:id_funcion/reservar", (req, res) => {
     const worker = cluster.fork();

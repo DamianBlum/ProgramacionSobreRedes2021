@@ -25,7 +25,12 @@ export class PaginaReservaComponent implements OnInit {
     .replace("[", "")
     .replace(/ /g, "");
 
+//idea aca poner lo de estados donde ahora hay un array, osea convertir el array en 
+
+    console.log(butacas.split(","));
+
     butacas.split(",").forEach(element => {
+      console.log(element);
       if (this.mapita.has(element[0])){
         this.mapita.get(element[0]).push(Number(element[1]));
       } else {
@@ -37,23 +42,17 @@ export class PaginaReservaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let butacas:string = "[\"a1\", \"a2\", \"a3\", \"a4\", \"a5\", \"a6\", \"b1\", \"b2\", \"b3\", \"b4\", \"b5\", \"b6\", \"c1\", \"c2\", \"c3\", \"c4\", \"d1\", \"d2\", \"d3\", \"e1\", \"e2\", \"f1\"]"
+    //let butacas:string = "[\"a1\", \"a2\", \"a3\", \"a4\", \"a5\", \"a6\", \"b1\", \"b2\", \"b3\", \"b4\", \"b5\", \"b6\", \"c1\", \"c2\", \"c3\", \"c4\", \"d1\", \"d2\", \"d3\", \"e1\", \"e2\", \"f1\"]"
 
-    this.StringAMapButacas(butacas);
-    console.log(this.mapita);
-    /*this.conf.getCartelera().subscribe((dataPeli)=>{
+    this.conf.getCartelera().subscribe((dataPeli)=>{
       dataPeli.forEach(peli => {
         if(peli.id == this.route.snapshot.paramMap.get("id")){
-          this.conf.getSala().subscribe((dataSala)=>{
-            dataSala.forEach(sala => {
-              if(sala.id == this.route.snapshot.paramMap.get("id")){
-                
-              }
-            });
-          })
+          this.StringAMapButacas(peli.butacas.toString());
+          console.log(this.mapita);
+
         }
       });
-    })*/
+    })
   }
 
 }

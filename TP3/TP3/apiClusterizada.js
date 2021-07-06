@@ -201,7 +201,7 @@ else {
     app.use(express.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.get("/funciones", function (req, res) {
-        pool.query("select * from funciones where vigente = 1", function (error, results) { return __awaiter(_this, void 0, void 0, function () {
+        pool.query("select funciones.id, titulo, fecha,sala,butacas_disponibles,vigente,foto,butacas  from funciones join salas on salas.id=funciones.sala where vigente = 1 ", function (error, results) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 if (error)
                     throw error;
@@ -210,16 +210,16 @@ else {
             });
         }); });
     });
-    app.get("/sala/:id_sala", function (req, res) {
-        pool.query("select butacas from salas where id =" + req.params.id_sala, function (error, results) { return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                if (error)
-                    throw error;
-                res.send(results);
-                return [2 /*return*/];
-            });
-        }); });
-    });
+    /*app.get("/sala/:id_sala", (req, res) =>{
+      pool.query(
+        `select butacas from salas where id =`+req.params.id_sala,
+        async (error, results) => {
+          console.log(results);
+          if (error) throw error;
+          res.send(results);
+        }
+      );
+    })*/
     app.post("/:id_funcion/reservar", function (req, res) {
         var worker = cluster_1.fork();
         var body = req.body;
