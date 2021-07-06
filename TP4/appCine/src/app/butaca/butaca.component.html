@@ -1,1 +1,1 @@
-<button id="{{butaca}}" class="btn btn-secondary" style="background-color: green;" (click)="reservarButaca()">{{butaca}}</button>
+<button id="butaca-{{butaca}}" class="btn btn-{{ estado == 'reservado' ? 'danger' : 'success'}} m-1" (click)="reservarButaca()">{{butaca}}</button>

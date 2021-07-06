@@ -1,0 +1,37 @@
+{
+    "profiles": [
+        {
+            "name": "TP4 FEDI",
+            "detail": "a casa angular",
+            "hidden": [
+                ".github",
+                ".vscode",
+                "docker-compose",
+                "prueba",
+                "TP1",
+                "TP2",
+                "TP4/appCine/config",
+                "TP4/appCine/node_modules",
+                "TP4/appCine/src/assets",
+                "TP4/appCine/src/environments",
+                "TP4/appCine/src/favicon.ico",
+                "TP4/appCine/src/polyfills.ts",
+                "TP4/appCine/src/test,ts",
+                "TP4/appCine/.browserslistrc",
+                "TP4/appCine/.editorconfig",
+                "TP4/appCine/.gitignore",
+                "TP4/appCine/angular.json",
+                "TP4/appCine/karma.conf.js",
+                "TP4/appCine/package-lock.json",
+                "TP4/appCine/package.json",
+                "TP4/appCine/tsconfig.app.json",
+                "TP4/appCine/tsconfig.json",
+                "TP4/appCine/tsconfig.spec.json",
+                "TP4/appCine/README.md",
+                "package-lock.json",
+                "heroku.yml",
+                "README.md"
+            ]
+        }
+    ]
+}

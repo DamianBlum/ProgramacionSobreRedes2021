@@ -14,10 +14,17 @@ export class ButacaComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    
   }
 
   reservarButaca(){
-    /*document.getElementById(this.butaca)?.style.backgroundColor="green";*/
-  }
+    if (this.estado == "disponible"){
+      document.getElementById("butaca-"+this.butaca)?.classList.remove("btn-success");
+      document.getElementById("butaca-"+this.butaca)?.classList.add("btn-warning");
+      this.estado = "seleccionado";
+    } else if (this.estado == "seleccionado"){
+      document.getElementById("butaca-"+this.butaca)?.classList.remove("btn-warning");
+      document.getElementById("butaca-"+this.butaca)?.classList.add("btn-success");
+      this.estado = "disponible";
+    }
+  }  
 }

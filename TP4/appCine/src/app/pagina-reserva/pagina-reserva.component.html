@@ -1,13 +1,30 @@
- <div class="container" style="text-align: center;">
-     <div *ngFor="let fila of mapita | keyvalue"
-     id="{{fila.key}}"
-     >
-         <app-butaca
-         *ngFor="let butaca of fila.value | keyvalue"
-         let butaca="{{butaca.value}}"
-         let estado="{{fila.key}}{{butaca.key}}"
-         >
-         
-         </app-butaca>
-     </div>
- </div>
+<div class="container" style="text-align: center">
+  <svg
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    width="400"
+    height="130"
+    viewBox="0 0 400 100"
+  >
+    <line
+      x1="10"
+      y1="50"
+      x2="390"
+      y2="50"
+      stroke-width="20"
+      stroke="black"
+      stroke-linecap="round"
+    />
+  </svg>
+  <div *ngFor="let fila of mapita | keyvalue" id="{{ fila.key }}">
+    <app-butaca
+      *ngFor="let butaca of fila.value | keyvalue"
+      let
+      butaca="{{ fila.key }}{{ butaca.key }}"
+      let
+      estado="{{ butaca.value }}"
+    >
+    </app-butaca>
+  </div>
+  <button class="btn btn-primary mt-5" (click)="reservar()"> RESERVAR</button>
+</div>

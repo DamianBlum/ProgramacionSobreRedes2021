@@ -35,8 +35,6 @@ export class PaginaReservaComponent implements OnInit {
 
 //idea aca poner lo de estados donde ahora hay un array, osea convertir el array en 
 
-    console.log(butacas.split(","));
-
     butacas.split(",").forEach(element => {
       if (this.mapita.has(element[0])){
 
@@ -66,11 +64,17 @@ export class PaginaReservaComponent implements OnInit {
       dataPeli.forEach(peli => {
         if(peli.id == this.route.snapshot.paramMap.get("id")){
           this.ConseguirButacasDisponiblesYNo(peli.butacas.toString(),peli.butacas_disponibles.toString());
-          console.log(this.mapita);
-
         }
       });
     })
   }
 
+  reservar():void {
+    let butacas_seleccionadas: Array<String> = []
+    Array.from(document.getElementsByClassName('btn-warning')).forEach(butacaSeleccionada => {
+      butacas_seleccionadas.push(butacaSeleccionada.innerHTML);
+    })
+    console.log(butacas_seleccionadas);
+    //llamar a la apid e nuevo
+  }
 }
