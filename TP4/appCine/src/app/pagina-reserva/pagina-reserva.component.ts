@@ -16,7 +16,7 @@ export class PaginaReservaComponent implements OnInit {
   constructor(private route: ActivatedRoute, private conf:ConfigService,) { }
 
   public mapita : Map<String,Map<String,String>> = new Map();
-  public pelicula : funcion | undefined; 
+  public pelicula!: funcion; 
 
   ConseguirButacasDisponiblesYNo(butacas:String,butacas_disponibles:String): void{
     butacas = butacas
@@ -31,9 +31,7 @@ export class PaginaReservaComponent implements OnInit {
     .replace("[", "")
     .replace(/ /g, "");
 
-    let array_butacas_disponibles=butacas_disponibles.split(",");
-
-//idea aca poner lo de estados donde ahora hay un array, osea convertir el array en 
+    let array_butacas_disponibles=butacas_disponibles.split(","); 
 
     butacas.split(",").forEach(element => {
       if (this.mapita.has(element[0])){
@@ -58,11 +56,11 @@ export class PaginaReservaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //let butacas:string = "[\"a1\", \"a2\", \"a3\", \"a4\", \"a5\", \"a6\", \"b1\", \"b2\", \"b3\", \"b4\", \"b5\", \"b6\", \"c1\", \"c2\", \"c3\", \"c4\", \"d1\", \"d2\", \"d3\", \"e1\", \"e2\", \"f1\"]"
 
     this.conf.getCartelera().subscribe((dataPeli)=>{
       dataPeli.forEach(peli => {
         if(peli.id == this.route.snapshot.paramMap.get("id")){
+          this.pelicula=peli;
           this.ConseguirButacasDisponiblesYNo(peli.butacas.toString(),peli.butacas_disponibles.toString());
         }
       });
@@ -74,7 +72,7 @@ export class PaginaReservaComponent implements OnInit {
     Array.from(document.getElementsByClassName('btn-warning')).forEach(butacaSeleccionada => {
       butacas_seleccionadas.push(butacaSeleccionada.innerHTML);
     })
+    this.conf.prueba(this.pelicula.id,butacas_seleccionadas.toString());
     console.log(butacas_seleccionadas);
-    //llamar a la apid e nuevo
   }
 }

@@ -210,17 +210,8 @@ else {
             });
         }); });
     });
-    /*app.get("/sala/:id_sala", (req, res) =>{
-      pool.query(
-        `select butacas from salas where id =`+req.params.id_sala,
-        async (error, results) => {
-          console.log(results);
-          if (error) throw error;
-          res.send(results);
-        }
-      );
-    })*/
     app.post("/:id_funcion/reservar", function (req, res) {
+        console.log(req.body);
         var worker = cluster_1.fork();
         var body = req.body;
         body.id_funcion = req.params.id_funcion;

@@ -213,18 +213,11 @@ if (cluster.isWorker) {
     );
   });
 
-  /*app.get("/sala/:id_sala", (req, res) =>{
-    pool.query(
-      `select butacas from salas where id =`+req.params.id_sala,
-      async (error, results) => {
-        console.log(results);
-        if (error) throw error;
-        res.send(results);
-      }
-    );
-  })*/
 
   app.post("/:id_funcion/reservar", (req, res) => {
+
+    console.log(req.body);
+
     const worker = cluster.fork();
 
     let body = req.body;
