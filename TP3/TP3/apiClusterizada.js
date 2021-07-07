@@ -87,6 +87,7 @@ var reservar = function (idUsuario, arrayButacas, idFuncion, conn) {
                                 });
                             }
                             var arrayButacasDisponibles = stringAArray(results[0].butacas_disponibles);
+                            console.log("Aca estan las butacas disponibles: " + arrayButacasDisponibles);
                             var butacasDisponiblesParaReservar = true;
                             arrayButacas.forEach(function (butaca) {
                                 if (!arrayButacasDisponibles.includes(butaca)) {
@@ -104,9 +105,12 @@ var reservar = function (idUsuario, arrayButacas, idFuncion, conn) {
                                         }
                                         else {
                                             butacasActualizadas_1 = arrayButacasDisponibles;
+                                            console.log(arrayButacas);
+                                            console.log(butacasActualizadas_1);
                                             arrayButacas.forEach(function (butaca) {
-                                                butacasActualizadas_1.splice(butacasActualizadas_1.indexOf(butaca));
+                                                butacasActualizadas_1.splice(butacasActualizadas_1.indexOf(butaca), 1);
                                             });
+                                            console.log(butacasActualizadas_1);
                                             if (butacasActualizadas_1.length > 0) {
                                                 conn.query("update funciones set butacas_disponibles = '" + arrayAString(butacasActualizadas_1) + "' where id = " + idFuncion, function (error) {
                                                     if (error) {
@@ -117,7 +121,7 @@ var reservar = function (idUsuario, arrayButacas, idFuncion, conn) {
                                                 });
                                             }
                                             else {
-                                                conn.query("update funciones set butacas_disponibles = '[]', vigente = 0", function (error) {
+                                                conn.query("update funciones set butacas_disponibles = '[]', vigente = 0 where id = " + idFuncion, function (error) {
                                                     if (error) {
                                                         return conn.rollback(function () {
                                                             throw error;
@@ -165,6 +169,7 @@ if (cluster.isWorker) {
                             idUsuario = bodyReserva.user_id;
                             idFuncion = bodyReserva.id_funcion;
                             arrayButacas = stringAArray(bodyReserva.butacas);
+                            console.log("Aca estan las butacas que le manda el flaco: " + arrayButacas);
                             if (arrayButacas.length >= 6) {
                                 process.send("No se pueden reservar mas de 5 butacas a la vez");
                                 process.kill(process.pid);
@@ -211,7 +216,6 @@ else {
         }); });
     });
     app.post("/:id_funcion/reservar", function (req, res) {
-        console.log(req.body);
         var worker = cluster_1.fork();
         var body = req.body;
         body.id_funcion = req.params.id_funcion;

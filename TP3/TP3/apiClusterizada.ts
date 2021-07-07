@@ -18,6 +18,7 @@ const stringAArray = (string: String): Array<String> => {
     .replace("[", "")
     .replace(/ /g, "");
   let arrayNuevo: Array<String> = stringModificado.split(",");
+
   return arrayNuevo;
 };
 const arrayAString = (array: Array<String>): String => {
@@ -71,6 +72,7 @@ const reservar = (
                     let arrayButacasDisponibles: Array<String> = stringAArray(
                       results[0].butacas_disponibles
                     );
+                    console.log("Aca estan las butacas disponibles: "+arrayButacasDisponibles);
 
                     let butacasDisponiblesParaReservar: boolean = true;
 
@@ -94,12 +96,17 @@ const reservar = (
                             let butacasActualizadas: Array<String> =
                               arrayButacasDisponibles;
 
+                            console.log(arrayButacas);
+                            console.log(butacasActualizadas);
+
                             arrayButacas.forEach((butaca) => {
                               butacasActualizadas.splice(
-                                butacasActualizadas.indexOf(butaca),
+                                butacasActualizadas.indexOf(butaca),1
                               );
                             });
 
+                            console.log(butacasActualizadas);
+                            
                             if (butacasActualizadas.length > 0) {
                               conn.query(
                                 `update funciones set butacas_disponibles = '${arrayAString(butacasActualizadas)}' where id = ${idFuncion}`,
@@ -113,7 +120,7 @@ const reservar = (
                               );
                             } else {
                               conn.query(
-                                `update funciones set butacas_disponibles = '[]', vigente = 0`,
+                                `update funciones set butacas_disponibles = '[]', vigente = 0 where id = ${idFuncion}`,
                                 (error) => {
                                   if (error) {
                                     return conn.rollback(function () {
@@ -162,6 +169,7 @@ if (cluster.isWorker) {
         let idUsuario: number = bodyReserva.user_id;
         let idFuncion: number = bodyReserva.id_funcion;
         let arrayButacas: Array<String> = stringAArray(bodyReserva.butacas);
+        console.log("Aca estan las butacas que le manda el flaco: "+arrayButacas);
 
         if (arrayButacas.length >= 6) {
           process.send("No se pueden reservar mas de 5 butacas a la vez");
@@ -216,7 +224,6 @@ if (cluster.isWorker) {
 
   app.post("/:id_funcion/reservar", (req, res) => {
 
-    console.log(req.body);
 
     const worker = cluster.fork();
 

@@ -32,17 +32,17 @@ export class ConfigService {
 
   prueba(idPeli:string,butacas: string){
 
-
     const body= new HttpParams()
-      .set('user_id',"5")
+      .set('user_id',"2")
       .set('butacas',butacas);
 
     this.http.post(this.url+"/"+idPeli+"/reservar",body,{
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    }).subscribe((dataQueNoExisteXD) =>{
-      console.log(dataQueNoExisteXD);
+      }, responseType: 'text' 
+    }).subscribe( string =>{
+      alert(string);
+      window.location.reload();
     })
 
   }

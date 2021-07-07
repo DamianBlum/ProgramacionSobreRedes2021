@@ -73,6 +73,7 @@ export class PaginaReservaComponent implements OnInit {
       butacas_seleccionadas.push(butacaSeleccionada.innerHTML);
     })
     this.conf.prueba(this.pelicula.id,butacas_seleccionadas.toString());
-    console.log(butacas_seleccionadas);
+    console.log(this.pelicula.id,butacas_seleccionadas.toString());
+    
   }
 }
