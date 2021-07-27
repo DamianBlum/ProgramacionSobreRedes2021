@@ -40,12 +40,12 @@ var clases_1 = require("./clases");
 var express = require('express');
 var mysql = require('mysql');
 var app = express();
-var port = process.env.PORT || 3000;
+var port = 3000;
 var connection = mysql.createConnection({
-    host: 'freedb.tech',
-    user: 'freedbtech_MarcoPontoriero',
-    password: 'alumnoipm',
-    database: 'freedbtech_ecommerceIPM',
+    host: 'sql10.freemysqlhosting.net',
+    user: 'sql10427764',
+    password: 'bd8vPi83dG',
+    database: 'sql10427764',
     port: "3306"
 });
 //JOYA
@@ -168,21 +168,14 @@ app.post('/usuarios/:id_usuario/calificaciones', function (req, res) { return __
                 return [4 /*yield*/, clases_1.Compra.find(idOperacion)];
             case 1:
                 compraRecibida = _a.sent();
-                console.log(compraRecibida);
-                console.log(compraRecibida.id_producto);
                 return [4 /*yield*/, clases_1.Producto.find(compraRecibida.id_producto)];
             case 2:
                 productoDeLaCompra = _a.sent();
-                console.log(productoDeLaCompra);
                 if (compraRecibida.id_usuario == idCalificante) {
-                    //connection.query(`insert into calificaciones_vendedores values(${compraRecibida.vendedor_calificado},${productoDeLaCompra.id_vendedor},${idCalificante},${Calificacion},${compraRecibida.fecha})`,function(error,resutls){
-                    //califica el comprador al vendedor
                     new clases_1.CalificacionesVendedor(null, productoDeLaCompra.vendedor, idCalificante, Calificacion, new Date()).save();
                     res.send("Insertado con exito la calificacion al vendedor");
                 }
                 else {
-                    //connection.query(`insert into calificaciones_compradores values(${compraRecibida.comprador_calificado},${compraRecibida.id_usuario},${idCalificante},${Calificacion},${compraRecibida.fecha})`,function(error,resutls){
-                    //califica el vendedor al comprador
                     new clases_1.CalificacionesComprador(null, compraRecibida.id_usuario, idCalificante, Calificacion, new Date()).save();
                     res.send("Insertado con exito la calificacion al comprador");
                 }
