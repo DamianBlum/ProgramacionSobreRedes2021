@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var clases_1 = require("./clases");
 var express = require('express');
+var requestIp = require('request-ip');
 var mysql = require('mysql');
 var app = express();
 var port = 3000;
@@ -47,6 +48,11 @@ var connection = mysql.createConnection({
     password: 'udOmPxGcb9',
     database: '9qxK1qwW4p',
     port: "3306"
+});
+app.get('/', function (request, response) {
+    var clientIp = requestIp.getClientIp(request);
+    console.log(clientIp);
+    response.send(clientIp);
 });
 //JOYA
 app.get('/productos', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {

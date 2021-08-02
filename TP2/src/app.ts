@@ -1,7 +1,7 @@
 import{TablaSQL,Compra,Favorito,Producto,Usuario,CalificacionesVendedor,CalificacionesComprador} from './clases';
 
 const express = require('express');
-
+var requestIp = require('request-ip');
 const mysql = require('mysql');
 const app = express();
 const port:number = 3000;
@@ -11,6 +11,13 @@ const connection = mysql.createConnection({
   password : 'udOmPxGcb9',
   database : '9qxK1qwW4p',
   port:"3306"
+});
+
+app.get('/',function(request, response) {
+
+  var clientIp = requestIp.getClientIp(request);
+  console.log(clientIp);
+  response.send(clientIp);
 });
 
 //JOYA

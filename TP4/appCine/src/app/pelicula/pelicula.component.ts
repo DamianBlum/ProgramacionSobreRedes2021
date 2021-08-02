@@ -15,7 +15,4 @@ export class PeliculaComponent {
   
   constructor(private router:Router) {}
 
-  /*clickPelicula(): void{
-    this.router.navigate(['prueba']);
-  } guardar por si acaso*/
 }

@@ -24,10 +24,7 @@ export class CarteleraComponent implements OnInit {
         pelicula.set('id', peliculaDatos['id']);
         pelicula.set('titulo', peliculaDatos['titulo']);
         pelicula.set('fecha', peliculaDatos['fecha'].split('T')[0]);
-        pelicula.set(
-          'hora',
-          peliculaDatos['fecha'].split('T')[1].split('.')[0]
-        );
+        pelicula.set('hora',peliculaDatos['fecha'].split('T')[1].split('.')[0]);
         pelicula.set('sala', peliculaDatos['sala']);
         pelicula.set('foto', peliculaDatos['foto']);
         this.peliculas.push(pelicula);

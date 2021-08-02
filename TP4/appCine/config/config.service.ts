@@ -25,15 +25,14 @@ export class ConfigService {
     this.peliculas = http.get<funcion[]>(this.url + "/funciones");
   }
   
-
   getCartelera(){
     return this.peliculas;
   }
 
-  prueba(idPeli:string,butacas: string){
+  reservarButacas(idPeli:string,butacas: string){
 
     const body= new HttpParams()
-      .set('user_id',"2")
+      .set('user_id',"4")
       .set('butacas',butacas);
 
     this.http.post(this.url+"/"+idPeli+"/reservar",body,{
