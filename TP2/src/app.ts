@@ -6,10 +6,10 @@ const mysql = require('mysql');
 const app = express();
 const port:number = 3000;
 const connection = mysql.createConnection({
-  host     : 'sql10.freemysqlhosting.net',
-  user     : 'sql10427764',
-  password : 'bd8vPi83dG',
-  database : 'sql10427764',
+  host     : 'remotemysql.com',
+  user     : '9qxK1qwW4p',
+  password : 'udOmPxGcb9',
+  database : '9qxK1qwW4p',
   port:"3306"
 });
 

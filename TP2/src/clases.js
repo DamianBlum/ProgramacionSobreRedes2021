@@ -55,10 +55,10 @@ exports.__esModule = true;
 exports.CalificacionesComprador = exports.CalificacionesVendedor = exports.Usuario = exports.Producto = exports.Favorito = exports.Compra = exports.TablaSQL = void 0;
 var mysql = require("mysql");
 var connection = mysql.createConnection({
-    host: 'sql10.freemysqlhosting.net',
-    user: 'sql10427764',
-    password: 'bd8vPi83dG',
-    database: 'sql10427764',
+    host: 'remotemysql.com',
+    user: '9qxK1qwW4p',
+    password: 'udOmPxGcb9',
+    database: '9qxK1qwW4p',
     port: "3306"
 });
 connection.connect();
